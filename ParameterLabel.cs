@@ -71,15 +71,15 @@ namespace POC_Spliiter
         protected override void OnResize( EventArgs e ) {
             base.OnResize( e );
 
-            btnFormula.Top = _margin / 2;
-            btnFormula.Height = Height - _margin;
+            btnFormula.Top = 0;
+            btnFormula.Height = Height;
             btnFormula.Width = btnFormula.Height;
             btnFormula.Left = Width - btnFormula.Width;
 
             btnHelp.Top = btnFormula.Top;
             btnHelp.Height = btnFormula.Height;
             btnHelp.Width = btnFormula.Width;
-            btnHelp.Left = btnFormula.Left - _margin - btnHelp.Width;
+            btnHelp.Left = btnFormula.Left - _margin  - btnHelp.Width;
 
             lblCaption.Top = ( Height - lblCaption.Height ) / 2;
             lblCaption.Height = btnFormula.Height;

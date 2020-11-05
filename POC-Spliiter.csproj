@@ -64,6 +64,12 @@
     <Compile Include="ParameterLabel.Designer.cs">
       <DependentUpon>ParameterLabel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParameterValue.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterValue.Designer.cs">
+      <DependentUpon>ParameterValue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -74,6 +80,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ParameterLabel.resx">
       <DependentUpon>ParameterLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParameterValue.resx">
+      <DependentUpon>ParameterValue.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

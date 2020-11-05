@@ -33,6 +33,7 @@
             // btnFormula
             // 
             this.btnFormula.Location = new System.Drawing.Point(296, 3);
+            this.btnFormula.Margin = new System.Windows.Forms.Padding(0);
             this.btnFormula.Name = "btnFormula";
             this.btnFormula.Size = new System.Drawing.Size(28, 23);
             this.btnFormula.TabIndex = 0;
@@ -43,6 +44,7 @@
             // btnHelp
             // 
             this.btnHelp.Location = new System.Drawing.Point(264, 3);
+            this.btnHelp.Margin = new System.Windows.Forms.Padding(0);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(26, 23);
             this.btnHelp.TabIndex = 1;
