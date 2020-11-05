@@ -7,49 +7,58 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace POC_Spliiter {
     public partial class ParameterContainer : UserControl {
 
-        bool controlsCreated = false;
-
-        class TagData {
-            public Control LinkedControl { get; set; }
-            public int Position { get; set; }
-
-            public TagData( Control linkedControl, int position ) {
-                LinkedControl = linkedControl;
-                Position = position;
-            }
-        }
-
-
-        List<Label> labels = new List<Label>();
-        List<TextBox> textboxes = new List<TextBox>();
+        const int _margin = 4;
 
         public ParameterContainer() {
             InitializeComponent();
         }
 
-        private Point _prevPan2Pos = new Point();
-
-        void PanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
-            SynchronizeSplitContainerScrollbars();
+        protected override void DestroyHandle() {
+            //make sure the control cross referencing tags are set to null to avoid memory leaks.
+            foreach ( Control control in splitContainer1.Panel1.Controls )
+                control.Tag = null;
+            foreach ( Control control in splitContainer1.Panel2.Controls )
+                control.Tag = null;
+            base.DestroyHandle();
         }
 
-        private void SynchronizeSplitContainerScrollbars() {
+        private Point _prevPan2Pos = new Point();
+
+        void OnPanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
+            SynchronizeLabelPositions();
+            ResizeDataEntryControls();
+        }
+
+        private void SynchronizeLabelPositions() {
             if ( splitContainer1.Panel2.AutoScrollPosition != _prevPan2Pos ) {
-                int margin = 4;
-                int maxheight = textboxes.Max( m => m.Height ) + ( margin * 2 );
-                foreach ( TextBox textbox in textboxes ) {
-                    TagData tagdata = textbox.Tag as TagData;
-                    Label label = tagdata.LinkedControl as Label;
-                    int position = tagdata.Position;
-                    label.Top = splitContainer1.Panel2.AutoScrollPosition.Y + position * ( maxheight + 1 ) + ( maxheight - label.Height ) / 2;
+
+                int maxheight = GetMaxHeight() + ( _margin * 2 );
+
+                int index =0;
+                foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                    TextBox textbox = control as TextBox;
+                    ParameterLabel parameterLabel = textbox.Tag as ParameterLabel;
+                    parameterLabel.Top = splitContainer1.Panel2.AutoScrollPosition.Y + index++ * ( maxheight + 1 ) + ( maxheight - parameterLabel.Height ) / 2;
                 }
-
-
                 _prevPan2Pos = splitContainer1.Panel2.AutoScrollPosition;
+            }
+        }
+
+        private void ResizeDataEntryControls() {
+            int margin = 4;
+
+            int scrollbarOffset = 0;
+            if ( splitContainer1.Panel2.VerticalScroll.Visible )
+                scrollbarOffset = SystemInformation.VerticalScrollBarWidth;
+
+            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                TextBox textbox = ( control as TextBox );
+                textbox.Width = splitContainer1.Panel2.Width - margin - scrollbarOffset;
             }
         }
 
@@ -59,77 +68,85 @@ namespace POC_Spliiter {
 
             splitContainer1.SplitterDistance = Width / 2;
 
-            splitContainer1.Panel2.Paint += PanelPaint;
-            splitContainer1.Panel2.Scroll += ( obj, scrollEventArgs ) => SynchronizeSplitContainerScrollbars();
+            splitContainer1.Panel2.Paint += OnPanelPaint;
+            splitContainer1.Panel2.Scroll += ( obj, scrollEventArgs ) => SynchronizeLabelPositions();
 
             splitContainer1.Panel1.AutoScroll = false;
             splitContainer1.Panel2.AutoScroll = true;
 
-            splitContainer1.SplitterMoved += SplitContainer1_SplitterMoved;
+            splitContainer1.SplitterMoved += OnSplitterMoved;
+
+            int margin = 4;
 
 
             for( int i = 0; i < 20; i++ ) {
-                Label label = new Label();
                 TextBox textbox = new TextBox();
+                ParameterLabel label = new ParameterLabel( $"Param{i}", $"Parameter Label #{i}", ( i % 2) == 0, textbox.Height, 4 );
 
-                label.Text = $"Label #{i}";
-                label.Tag = new TagData( textbox, i );
+                label.Tag = textbox;
                 splitContainer1.Panel1.Controls.Add( label );
-                labels.Add( label );
-                label.Click += LabelClick;
-
+                label.ShowHelp += OnShowHelp;
+                label.SetFormula += OnSetFormula;
 
                 textbox.Text = $"Textbox #{i}";
-                textbox.Tag = new TagData( label, i );
+                textbox.Tag = label;
                 splitContainer1.Panel2.Controls.Add( textbox );
-                textboxes.Add( textbox );
             }
 
-            controlsCreated = true;
-            LayoutControls();
-        }
+            
 
-        private void LabelClick( object sender, EventArgs e ) {
-            Label label = sender as Label;
-            ( ( label.Tag as TagData ).LinkedControl as TextBox ).Focus();
-        }
+            int maxheight = GetMaxHeight() + ( margin * 2 );
+            int index = 0;
+            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                TextBox textbox = control as TextBox;
+                ParameterLabel label = textbox.Tag as ParameterLabel;
 
-        private void SplitContainer1_SplitterMoved( object sender, SplitterEventArgs e ) {
-            int margin = 4;
-            int maxheight = textboxes.Max( m => m.Height ) + ( margin * 2 );
-            foreach ( TextBox textbox in textboxes ) {
-                TagData tagdata = textbox.Tag as TagData;
-                Label label = tagdata.LinkedControl as Label;
-                int position = tagdata.Position;
-
-                textbox.Width = splitContainer1.Panel2.Width - margin;
-
-                label.Left = margin;
-                label.Width = splitContainer1.Panel1.Width - margin;
-            }
-        }
-
-        void LayoutControls() {
-
-            int margin = 4;
-            int maxheight = textboxes.Max( m => m.Height ) + ( margin * 2 );
-            foreach ( TextBox textbox in textboxes ) {
-                TagData tagdata = textbox.Tag as TagData;
-                Label label = tagdata.LinkedControl as Label;
-                int position = tagdata.Position;
-
-                textbox.Top = position * ( maxheight + 1 ) + margin;
+                textbox.Top = index * ( maxheight + 1 ) + margin;
                 textbox.Left = 0;
                 textbox.Width = splitContainer1.Panel2.Width - margin;
 
-                label.Top = position * ( maxheight + 1 ) + ( maxheight - label.Height ) / 2;
+                label.Top = index * ( maxheight + 1 ) + ( maxheight - label.Height ) / 2;
                 label.Left = margin;
                 label.Width = splitContainer1.Panel1.Width - margin;
-                label.TextAlign = ContentAlignment.MiddleRight;
 
-           
+                index++;
+
             }
+        }
 
+        private void OnSetFormula( string Name ) {
+            MessageBox.Show( $"Show formula dialog for {Name}" );
+        }
+
+        private void OnShowHelp( string Name ) {
+            MessageBox.Show( $"Show help for {Name}" );
+        }
+
+        private void OnSplitterMoved( object sender, SplitterEventArgs e ) {
+            int margin = 4;
+            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                TextBox textbox = control as TextBox;
+                ParameterLabel label = textbox.Tag as ParameterLabel;
+
+                int scrollbarOffset = 0;
+                if ( splitContainer1.Panel2.VerticalScroll.Visible )
+                    scrollbarOffset = SystemInformation.VerticalScrollBarWidth;
+                
+                textbox.Width = splitContainer1.Panel2.Width - margin - scrollbarOffset;
+                label.Left = margin;
+                label.Width = splitContainer1.Panel1.Width - margin;
+            }
+        }
+
+        int GetMaxHeight() {
+            int result = 0;
+
+            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                TextBox textbox = control as TextBox;
+                if ( textbox.Height > result )
+                    result = textbox.Height;
+            }
+            return result;
         }
 
     }
