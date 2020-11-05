@@ -17,14 +17,13 @@ namespace POC_Spliiter
     {
         string _parameterName;
         int _margin;
+        bool _isRequired;
 
         public event ShowHelpHandler ShowHelp;
         public event SetFormulaHandler SetFormula;
 
-        public ParameterLabel( string name, string caption, bool isRequired, int height, int margin ) {
+        public ParameterLabel( string name, string caption, bool isRequired, int margin ) {
             InitializeComponent();
-
-            Height = height;
 
             lblCaption.Text = caption;
 
@@ -34,13 +33,16 @@ namespace POC_Spliiter
             _parameterName = name;
             _margin = margin;
 
-            lblRequired.Visible = isRequired;
-
             lblCaption.AutoSize = true;
             lblCaption.AutoEllipsis = true;
+            _isRequired = isRequired;
 
             lblCaption.Click += OnCaptionClick;
+        }
 
+        protected override void OnParentChanged( EventArgs e ) {
+            if ( Parent != null )
+                SetFont( Parent.Font );
         }
 
         protected override void OnClick( EventArgs e ) {
@@ -48,16 +50,22 @@ namespace POC_Spliiter
             ( Tag as Control ).Focus();
         }
 
+        internal void SetFont( Font font ) {
+            lblCaption.Font = new Font( font, ( _isRequired ) ? FontStyle.Bold : FontStyle.Regular );
+        }
+
         private void OnCaptionClick( object sender, EventArgs e ) {
-            (Tag as Control).Focus();
+            ( Tag as Control ).Focus();
         }
 
         private void OnHelpClick( object sender, EventArgs e ) {
             ShowHelp?.Invoke( _parameterName );
+            ( Tag as Control ).Focus();
         }
 
         private void OnFormulaClick( object sender, EventArgs e ) {
             SetFormula?.Invoke( _parameterName );
+            ( Tag as Control ).Focus();
         }
 
         protected override void OnResize( EventArgs e ) {
@@ -73,19 +81,10 @@ namespace POC_Spliiter
             btnHelp.Width = btnFormula.Width;
             btnHelp.Left = btnFormula.Left - _margin - btnHelp.Width;
 
-            int captionLabelRight = btnHelp.Left - _margin;
-
-            if ( lblRequired.Visible ) {
-                lblRequired.Top = ( Height - lblRequired.Height ) / 2;
-                lblRequired.Height = Height - _margin;
-                lblRequired.Left = captionLabelRight - lblRequired.Width;
-                captionLabelRight = lblRequired.Left;
-            }
-
             lblCaption.Top = ( Height - lblCaption.Height ) / 2;
             lblCaption.Height = btnFormula.Height;
-            lblCaption.MaximumSize = new Size( captionLabelRight, lblCaption.Height );
-            lblCaption.Left = captionLabelRight - lblCaption.Width;
+            lblCaption.MaximumSize = new Size( btnHelp.Left - _margin, lblCaption.Height );
+            lblCaption.Left = btnHelp.Left - _margin - lblCaption.Width;
 
         }
 

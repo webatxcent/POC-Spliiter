@@ -31,17 +31,18 @@
             this.parameterContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.parameterContainer1.Location = new System.Drawing.Point(18, 19);
+            this.parameterContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.parameterContainer1.Location = new System.Drawing.Point(9, 10);
             this.parameterContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.parameterContainer1.Name = "parameterContainer1";
-            this.parameterContainer1.Size = new System.Drawing.Size(1164, 688);
+            this.parameterContainer1.Size = new System.Drawing.Size(1177, 655);
             this.parameterContainer1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 727);
+            this.ClientSize = new System.Drawing.Size(1194, 675);
             this.Controls.Add(this.parameterContainer1);
             this.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);

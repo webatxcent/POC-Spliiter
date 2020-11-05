@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace POC_Spliiter {
-    public partial class ParameterContainer : UserControl {
+namespace POC_Spliiter
+{
+    public partial class ParameterContainer : UserControl
+    {
 
         const int _margin = 4;
 
@@ -20,97 +22,107 @@ namespace POC_Spliiter {
 
         protected override void DestroyHandle() {
             //make sure the control cross referencing tags are set to null to avoid memory leaks.
-            foreach ( Control control in splitContainer1.Panel1.Controls )
+            foreach ( Control control in splitContainer.Panel1.Controls )
                 control.Tag = null;
-            foreach ( Control control in splitContainer1.Panel2.Controls )
+            foreach ( Control control in splitContainer.Panel2.Controls )
                 control.Tag = null;
             base.DestroyHandle();
         }
 
         private Point _prevPan2Pos = new Point();
 
-        void OnPanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
+        void OnValuePanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
+            ResizeValuePanelControls();
+            ResizeLabelPanelControls();
             SynchronizeLabelPositions();
-            ResizeDataEntryControls();
         }
 
         private void SynchronizeLabelPositions() {
-            if ( splitContainer1.Panel2.AutoScrollPosition != _prevPan2Pos ) {
+            if ( splitContainer.Panel2.AutoScrollPosition != _prevPan2Pos ) {
 
-                int maxheight = GetMaxHeight() + ( _margin * 2 );
-
-                int index =0;
-                foreach ( Control control in splitContainer1.Panel2.Controls ) {
+                int nextTop = 0;
+                foreach ( Control control in splitContainer.Panel2.Controls ) {
                     TextBox textbox = control as TextBox;
                     ParameterLabel parameterLabel = textbox.Tag as ParameterLabel;
-                    parameterLabel.Top = splitContainer1.Panel2.AutoScrollPosition.Y + index++ * ( maxheight + 1 ) + ( maxheight - parameterLabel.Height ) / 2;
+                    parameterLabel.Top = splitContainer.Panel2.AutoScrollPosition.Y + nextTop;
+
+                    nextTop += textbox.Height + _margin;
                 }
-                _prevPan2Pos = splitContainer1.Panel2.AutoScrollPosition;
+                _prevPan2Pos = splitContainer.Panel2.AutoScrollPosition;
             }
         }
 
-        private void ResizeDataEntryControls() {
-            int margin = 4;
+        private void ResizeValuePanelControls() {
 
             int scrollbarOffset = 0;
-            if ( splitContainer1.Panel2.VerticalScroll.Visible )
+            if ( splitContainer.Panel2.VerticalScroll.Visible )
                 scrollbarOffset = SystemInformation.VerticalScrollBarWidth;
 
-            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+            foreach ( Control control in splitContainer.Panel2.Controls ) {
                 TextBox textbox = ( control as TextBox );
-                textbox.Width = splitContainer1.Panel2.Width - margin - scrollbarOffset;
+                textbox.Width = splitContainer.Panel2.Width - scrollbarOffset;
+            }
+        }
+
+        private void ResizeLabelPanelControls() {
+
+            foreach ( Control control in splitContainer.Panel1.Controls ) {
+                ParameterLabel label  = ( control as ParameterLabel );
+                TextBox textbox = label.Tag as TextBox;
+                label.Height = textbox.Height;
             }
         }
 
         protected override void OnCreateControl() {
-          
+
             base.OnCreateControl();
 
-            splitContainer1.SplitterDistance = Width / 2;
+            //these handlers are part of the fix for the focus problem with the splitter container sticking on the splitter bar.
+            splitContainer.MouseDown += splitContainer_MouseDown;
+            splitContainer.MouseUp += splitContainer_MouseUp;
 
-            splitContainer1.Panel2.Paint += OnPanelPaint;
-            splitContainer1.Panel2.Scroll += ( obj, scrollEventArgs ) => SynchronizeLabelPositions();
+            //this sets the initial splitter position, this should probably be externalized and saved off so that it is persisted as user preferences.
+            splitContainer.SplitterDistance = Width / 3;
 
-            splitContainer1.Panel1.AutoScroll = false;
-            splitContainer1.Panel2.AutoScroll = true;
+            //these events setup reposition and resize activities as a result of scrolling and movement of the splitter bar.
+            splitContainer.Panel2.Paint += OnValuePanelPaint;
+            splitContainer.SplitterMoved += OnSplitterMoved;
 
-            splitContainer1.SplitterMoved += OnSplitterMoved;
+            splitContainer.Panel1.AutoScroll = false; //we will scroll this one by hand since setting this to true will show a redundant scroll bar.
+            splitContainer.Panel2.AutoScroll = true;
 
-            int margin = 4;
 
-
-            for( int i = 0; i < 20; i++ ) {
+            //create the required controls
+            for ( int i = 0; i < 20; i++ ) {
                 TextBox textbox = new TextBox();
-                ParameterLabel label = new ParameterLabel( $"Param{i}", $"Parameter Label #{i}", ( i % 2) == 0, textbox.Height, 4 );
+                ParameterLabel label = new ParameterLabel( $"Param{i}", $"Parameter Label #{i}", ( i % 2) == 0, 4 );
 
                 label.Tag = textbox;
-                splitContainer1.Panel1.Controls.Add( label );
+                splitContainer.Panel1.Controls.Add( label );
                 label.ShowHelp += OnShowHelp;
                 label.SetFormula += OnSetFormula;
+                label.TabStop = false;
 
-                textbox.Text = $"Textbox #{i}";
                 textbox.Tag = label;
-                splitContainer1.Panel2.Controls.Add( textbox );
+                splitContainer.Panel2.Controls.Add( textbox );
+                textbox.Text = $"Textbox #{i}";
             }
 
-            
-
-            int maxheight = GetMaxHeight() + ( margin * 2 );
-            int index = 0;
-            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+            //perform an initial positioning on them.
+            int nextTop = 0;
+            foreach ( Control control in splitContainer.Panel2.Controls ) {
                 TextBox textbox = control as TextBox;
                 ParameterLabel label = textbox.Tag as ParameterLabel;
 
-                textbox.Top = index * ( maxheight + 1 ) + margin;
+                textbox.Top = nextTop;
                 textbox.Left = 0;
-                textbox.Width = splitContainer1.Panel2.Width - margin;
+                textbox.Width = splitContainer.Panel2.Width;
 
-                label.Top = index * ( maxheight + 1 ) + ( maxheight - label.Height ) / 2;
-                label.Left = margin;
-                label.Width = splitContainer1.Panel1.Width - margin;
+                label.Top = nextTop;
+                label.Left = 0;
+                label.Width = splitContainer.Panel1.Width;
 
-                index++;
-
+                nextTop += textbox.Height + _margin;
             }
         }
 
@@ -122,32 +134,61 @@ namespace POC_Spliiter {
             MessageBox.Show( $"Show help for {Name}" );
         }
 
+        /// <summary>
+        /// This event handles resizing both the label controls and the value controls when the splitter bar is moved.
+        /// </summary>
         private void OnSplitterMoved( object sender, SplitterEventArgs e ) {
-            int margin = 4;
-            foreach ( Control control in splitContainer1.Panel2.Controls ) {
+
+            foreach ( Control control in splitContainer.Panel2.Controls ) {
                 TextBox textbox = control as TextBox;
                 ParameterLabel label = textbox.Tag as ParameterLabel;
 
                 int scrollbarOffset = 0;
-                if ( splitContainer1.Panel2.VerticalScroll.Visible )
+                if ( splitContainer.Panel2.VerticalScroll.Visible )
                     scrollbarOffset = SystemInformation.VerticalScrollBarWidth;
-                
-                textbox.Width = splitContainer1.Panel2.Width - margin - scrollbarOffset;
-                label.Left = margin;
-                label.Width = splitContainer1.Panel1.Width - margin;
+
+                textbox.Width = splitContainer.Panel2.Width - scrollbarOffset;
+                label.Left = 0;
+                label.Width = splitContainer.Panel1.Width;
             }
         }
 
-        int GetMaxHeight() {
-            int result = 0;
+        #region Fix for focus sticking on the splitter bar.
 
-            foreach ( Control control in splitContainer1.Panel2.Controls ) {
-                TextBox textbox = control as TextBox;
-                if ( textbox.Height > result )
-                    result = textbox.Height;
-            }
-            return result;
+        private Control focused = null;
+
+        private void splitContainer_MouseDown( object sender, MouseEventArgs e ) {
+            // Get the focused control before the splitter is focused
+            focused = getFocused( this.Controls );
         }
+
+        private Control getFocused( Control.ControlCollection controls ) {
+            foreach ( Control c in controls ) {
+                if ( c.Focused ) {
+                    // Return the focused control
+                    return c;
+                }
+                else if ( c.ContainsFocus ) {
+                    // If the focus is contained inside a control's children
+                    // return the child
+                    return getFocused( c.Controls );
+                }
+            }
+            // No control on the form has focus
+            return null;
+        }
+
+        private void splitContainer_MouseUp( object sender, MouseEventArgs e ) {
+            // If a previous control had focus
+            if ( focused != null ) {
+                // Return focus and clear the temp variable for 
+                // garbage collection
+                focused.Focus();
+                focused = null;
+            }
+        }
+
+        #endregion
 
     }
 }
