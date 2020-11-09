@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace POC_Spliiter {
+namespace POC_Splitter {
     public partial class Form1 : Form {
         public Form1() {
             InitializeComponent();

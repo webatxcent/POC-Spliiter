@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using XCENT.JobServer.Abstract;
+using POC_Spliiter;
 
-namespace POC_Spliiter
+namespace POC_Splitter
 {
 
     public enum MoveFocus
@@ -29,12 +31,40 @@ namespace POC_Spliiter
         public event MoveFocusHandler FocusChange;
         public event SyncLabelsHandler SyncLabels;
 
-        public ParameterValue() {
-            InitializeComponent();
-            txtValue.KeyDown += OnValueControlKeyDown;
+        IValueEditor _editor;
+        TextBox _proxy; //stand-in for ideal height of the control
 
+        public ParameterValue( ParameterDef parameterDef, string value ) {
+            InitializeComponent();
+
+            //this is used for locating controls.
+            Name = parameterDef.Name;
+
+            //establish minimum height for the control which is based on the textbox. This can always be overridden when implementing PreferredHeight in the Value editors.
+            _proxy = new TextBox();
+            _proxy.Visible = false;
+            Controls.Add( _proxy );
+
+
+            if ( parameterDef.ModuleParameterType == ModuleParameterType.String ) {
+                _editor = new StringEditor();
+            }
+            else if ( parameterDef.ModuleParameterType == ModuleParameterType.Bool ) {
+                _editor = new BoolEditor();
+            }
+
+            Controls.Add( _editor.Control );
+
+            _editor.Configure( parameterDef, value );
+            _editor.Control.KeyDown += OnValueControlKeyDown;
         }
 
+        /// <summary>
+        /// This event handler is needed to compensate for a problem in the parent container control where small scrollbar movements,
+        /// and control repositions as the result of tabbing/focus do not trigger a scroll event. The consumer uses this event as a 
+        /// signal to execute code to realign the label panel with the value panel
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnMove( EventArgs e ) {
             base.OnMove( e );
             SyncLabels?.Invoke();
@@ -65,17 +95,16 @@ namespace POC_Spliiter
 
         protected override void OnResize( EventArgs e ) {
             base.OnResize( e );
-            Height = txtValue.Height;
-            txtValue.Width = Width;
+            if ( _editor == null )
+                return;
+            var minHeight = _proxy.PreferredHeight;
+            if ( _editor.PreferredHeight < minHeight ) {
+                Height = minHeight;
+                _editor.Control.Height = minHeight;
+            }
+            else
+                Height = _editor.PreferredHeight;
+            _editor.Control.Width = Width;
         }
-
-        protected override void OnTextChanged( EventArgs e ) {
-            base.OnTextChanged( e );
-            txtValue.Text = Text;
-        }
-
-
-
-
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace POC_Spliiter
+namespace POC_Splitter
 {
     public delegate void ShowHelpHandler( string Name );
     public delegate void SetFormulaHandler( string Name );

@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using XCENT.JobServer.Abstract;
 
-namespace POC_Spliiter
+namespace POC_Splitter
 {
     public partial class ParameterContainer : UserControl
     {
@@ -30,7 +31,6 @@ namespace POC_Spliiter
         }
 
         void OnValuePanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
-            Debug.Print( "Paint" );
             ResizeValuePanelControls();
             ResizeLabelPanelControls();
             SynchronizeLabelPositions();
@@ -94,10 +94,12 @@ namespace POC_Spliiter
             splitContainer.Panel1.AutoScroll = false; //we will scroll this one by hand since setting this to true will show a redundant scroll bar.
             splitContainer.Panel2.AutoScroll = true;
 
-
+            int i;
             //create the required controls
-            for ( int i = 0; i < 20; i++ ) {
-                ParameterValue parameterValue = new ParameterValue();
+            for ( i = 0; i < 20; i++ ) {
+
+                ParameterDef defTextBox = new ParameterDef() { Name = $"Param{i}", ModuleParameterType = ModuleParameterType.String };
+                ParameterValue parameterValue = new ParameterValue(  defTextBox, $"Parameter Value #{i}" );
                 ParameterLabel parameterLabel = new ParameterLabel( $"Param{i}", $"Parameter Label #{i}", ( i % 2 ) == 0, 2 );
 
                 parameterLabel.Tag = parameterValue;
@@ -108,11 +110,45 @@ namespace POC_Spliiter
 
                 parameterValue.Tag = parameterLabel;
                 splitContainer.Panel2.Controls.Add( parameterValue );
-                parameterValue.Text = $"Parameter Value #{i}";
-                parameterValue.Name = $"Param{i}";
                 parameterValue.FocusChange += OnFocusChange;
                 parameterValue.SyncLabels += OnSyncLabels;
             }
+
+            i++;
+            ParameterDef defUnReqCheckbox = new ParameterDef() { Name = $"Param{i}", IsRequired = false, ModuleParameterType = ModuleParameterType.Bool };
+            ParameterValue parameterUnReqCheckBoxValue = new ParameterValue(  defUnReqCheckbox, null );
+            ParameterLabel parameterUnReqCheckBoxLabel = new ParameterLabel( $"Param{i}", $"Checkbox {i}", defUnReqCheckbox.IsRequired, 2 );
+
+            parameterUnReqCheckBoxLabel.Tag = parameterUnReqCheckBoxValue;
+            splitContainer.Panel1.Controls.Add( parameterUnReqCheckBoxLabel );
+            parameterUnReqCheckBoxLabel.ShowHelp += OnShowHelp;
+            parameterUnReqCheckBoxLabel.SetFormula += OnSetFormula;
+            parameterUnReqCheckBoxLabel.TabStop = false;
+
+            parameterUnReqCheckBoxValue.Tag = parameterUnReqCheckBoxLabel;
+            splitContainer.Panel2.Controls.Add( parameterUnReqCheckBoxValue );
+            parameterUnReqCheckBoxValue.FocusChange += OnFocusChange;
+            parameterUnReqCheckBoxValue.SyncLabels += OnSyncLabels;
+
+
+            i++;
+            ParameterDef defReqCheckbox = new ParameterDef() { Name = $"Param{i}", IsRequired = true, ModuleParameterType = ModuleParameterType.Bool };
+            ParameterValue parameterReqCheckBoxValue = new ParameterValue(  defReqCheckbox, null );
+            ParameterLabel parameterReqCheckBoxLabel = new ParameterLabel( $"Param{i}", $"Checkbox {i}", defReqCheckbox.IsRequired, 2 );
+
+            parameterReqCheckBoxLabel.Tag = parameterReqCheckBoxValue;
+            splitContainer.Panel1.Controls.Add( parameterReqCheckBoxLabel );
+            parameterReqCheckBoxLabel.ShowHelp += OnShowHelp;
+            parameterReqCheckBoxLabel.SetFormula += OnSetFormula;
+            parameterReqCheckBoxLabel.TabStop = false;
+
+            parameterReqCheckBoxValue.Tag = parameterReqCheckBoxLabel;
+            splitContainer.Panel2.Controls.Add( parameterReqCheckBoxValue );
+            parameterReqCheckBoxValue.FocusChange += OnFocusChange;
+            parameterReqCheckBoxValue.SyncLabels += OnSyncLabels;
+
+
+
 
             //perform an initial positioning on them.
             int nextTop = 0;

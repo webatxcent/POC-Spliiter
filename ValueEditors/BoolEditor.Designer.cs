@@ -1,6 +1,6 @@
-﻿namespace POC_Splitter
+﻿namespace POC_Spliiter
 {
-    partial class ParameterValue
+    partial class BoolEditor
     {
         /// <summary> 
         /// Required designer variable.
@@ -25,16 +25,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.SuspendLayout();
-            // 
-            // ParameterValue
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "ParameterValue";
-            this.Size = new System.Drawing.Size(336, 15);
-            this.ResumeLayout(false);
-
+            components = new System.ComponentModel.Container();
         }
 
         #endregion

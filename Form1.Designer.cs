@@ -1,4 +1,4 @@
-﻿namespace POC_Spliiter {
+﻿namespace POC_Splitter {
     partial class Form1 {
         /// <summary>
         /// Required designer variable.
@@ -23,7 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.parameterContainer1 = new POC_Spliiter.ParameterContainer();
+            this.parameterContainer1 = new POC_Splitter.ParameterContainer();
             this.SuspendLayout();
             // 
             // parameterContainer1
@@ -35,7 +35,7 @@
             this.parameterContainer1.Location = new System.Drawing.Point(13, 14);
             this.parameterContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.parameterContainer1.Name = "parameterContainer1";
-            this.parameterContainer1.Size = new System.Drawing.Size(1169, 647);
+            this.parameterContainer1.Size = new System.Drawing.Size(1169, 578);
             this.parameterContainer1.TabIndex = 0;
             // 
             // Form1
