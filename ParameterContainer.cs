@@ -147,7 +147,112 @@ namespace POC_Splitter
             parameterReqCheckBoxValue.FocusChange += OnFocusChange;
             parameterReqCheckBoxValue.SyncLabels += OnSyncLabels;
 
+            i++;
+            ParameterDef defReqDate = new ParameterDef() { Name = $"Param{i}", IsRequired = true, ModuleParameterType = ModuleParameterType.Date };
+            ParameterValue parameterReqDateValue = new ParameterValue(  defReqDate, null );
+            ParameterLabel parameterReqDateLabel = new ParameterLabel( $"Param{i}", $"Date {i}", defReqDate.IsRequired, 2 );
 
+            parameterReqDateLabel.Tag = parameterReqDateValue;
+            splitContainer.Panel1.Controls.Add( parameterReqDateLabel );
+            parameterReqDateLabel.ShowHelp += OnShowHelp;
+            parameterReqDateLabel.SetFormula += OnSetFormula;
+            parameterReqDateLabel.TabStop = false;
+
+            parameterReqDateValue.Tag = parameterReqDateLabel;
+            splitContainer.Panel2.Controls.Add( parameterReqDateValue );
+            parameterReqDateValue.FocusChange += OnFocusChange;
+            parameterReqDateValue.SyncLabels += OnSyncLabels;
+
+            i++;
+            ParameterDef defUnReqDate = new ParameterDef() { Name = $"Param{i}", IsRequired = false, ModuleParameterType = ModuleParameterType.Date };
+            ParameterValue parameterUnReqDateValue = new ParameterValue(  defUnReqDate, null );
+            ParameterLabel parameterUnReqDateLabel = new ParameterLabel( $"Param{i}", $"Date {i}", defUnReqDate.IsRequired, 2 );
+
+            parameterUnReqDateLabel.Tag = parameterUnReqDateValue;
+            splitContainer.Panel1.Controls.Add( parameterUnReqDateLabel );
+            parameterUnReqDateLabel.ShowHelp += OnShowHelp;
+            parameterUnReqDateLabel.SetFormula += OnSetFormula;
+            parameterUnReqDateLabel.TabStop = false;
+
+            parameterUnReqDateValue.Tag = parameterUnReqDateLabel;
+            splitContainer.Panel2.Controls.Add( parameterUnReqDateValue );
+            parameterUnReqDateValue.FocusChange += OnFocusChange;
+            parameterUnReqDateValue.SyncLabels += OnSyncLabels;
+
+            i++;
+            int j = i;
+            for( ; j <= i + 1; j++ ) {
+
+                string labelText ="";
+                ParameterDef defNumber = null;
+                ParameterValue parameterNumberValue = null;
+
+                if ( j == i ) {
+                    defNumber = new ParameterDef() { Name = $"Param{j}", IsRequired = false, ModuleParameterType = ModuleParameterType.Number, DecimalPlaces = 3, MinValue= 0, MaxValue = 100 };
+                    parameterNumberValue = new ParameterValue(  defNumber, "50" );
+                    labelText = $"Number d3 0<=x<=100 {j}";
+                }
+                else if ( j == i + 1 ) {
+                    defNumber = new ParameterDef() { Name = $"Param{j}", IsRequired = true, ModuleParameterType = ModuleParameterType.Number, DecimalPlaces = 2, MinValue = 0, MaxValue = 1000 };
+                    parameterNumberValue = new ParameterValue( defNumber, "500" );
+                    labelText = $"Number d2 0<=x<=1000 {j}";
+                }
+
+                ParameterLabel parameterNumberLabel = new ParameterLabel( $"Param{j}", labelText, defNumber.IsRequired, 2 );
+
+                parameterNumberLabel.Tag = parameterNumberValue;
+                splitContainer.Panel1.Controls.Add( parameterNumberLabel );
+                parameterNumberLabel.ShowHelp += OnShowHelp;
+                parameterNumberLabel.SetFormula += OnSetFormula;
+                parameterNumberLabel.TabStop = false;
+
+                parameterNumberValue.Tag = parameterNumberLabel;
+                splitContainer.Panel2.Controls.Add( parameterNumberValue );
+                parameterNumberValue.FocusChange += OnFocusChange;
+                parameterNumberValue.SyncLabels += OnSyncLabels;
+            }
+
+            i = j;
+
+            List<string> choices = new List<string>();
+            choices.Add( "Before" );
+            choices.Add( "During" );
+            choices.Add( "After" );
+            ParameterDef defSingleChoice = new ParameterDef() { Name = $"Param{i}", IsRequired = false, ModuleParameterType = ModuleParameterType.Choice, Choices = choices };
+            ParameterValue parameterSingleChoiceValue = new ParameterValue(  defSingleChoice, "During" );
+            ParameterLabel parameterSingleChoiceLabel = new ParameterLabel( $"Param{i}", $"Single Choice {i}", defSingleChoice.IsRequired, 2 );
+
+            parameterSingleChoiceLabel.Tag = parameterSingleChoiceValue;
+            splitContainer.Panel1.Controls.Add( parameterSingleChoiceLabel );
+            parameterSingleChoiceLabel.ShowHelp += OnShowHelp;
+            parameterSingleChoiceLabel.SetFormula += OnSetFormula;
+            parameterSingleChoiceLabel.TabStop = false;
+
+            parameterSingleChoiceValue.Tag = parameterSingleChoiceLabel;
+            splitContainer.Panel2.Controls.Add( parameterSingleChoiceValue );
+            parameterSingleChoiceValue.FocusChange += OnFocusChange;
+            parameterSingleChoiceValue.SyncLabels += OnSyncLabels;
+
+            i++;
+            choices = new List<string>();
+            choices.Add( "Create" );
+            choices.Add( "Modify" );
+            choices.Add( "Delete" );
+            choices.Add( "Rename" );
+            ParameterDef defMultiChoice = new ParameterDef() { Name = $"Param{i}", IsRequired = false, ModuleParameterType = ModuleParameterType.Choice, Choices = choices, AllowMultipleSelections = true };
+            ParameterValue parameterMultiChoiceValue = new ParameterValue(  defMultiChoice, "Create, Modify" );
+            ParameterLabel parameterMultiChoiceLabel = new ParameterLabel( $"Param{i}", $"Multi Choice {i}", defMultiChoice.IsRequired, 2 );
+
+            parameterMultiChoiceLabel.Tag = parameterMultiChoiceValue;
+            splitContainer.Panel1.Controls.Add( parameterMultiChoiceLabel );
+            parameterMultiChoiceLabel.ShowHelp += OnShowHelp;
+            parameterMultiChoiceLabel.SetFormula += OnSetFormula;
+            parameterMultiChoiceLabel.TabStop = false;
+
+            parameterMultiChoiceValue.Tag = parameterMultiChoiceLabel;
+            splitContainer.Panel2.Controls.Add( parameterMultiChoiceValue );
+            parameterMultiChoiceValue.FocusChange += OnFocusChange;
+            parameterMultiChoiceValue.SyncLabels += OnSyncLabels;
 
 
             //perform an initial positioning on them.
@@ -167,7 +272,7 @@ namespace POC_Splitter
                 nextTop += parameterValue.Height + _margin;
             }
         }
-
+        
         private void OnSyncLabels() {
             SynchronizeLabelPositions();
         }

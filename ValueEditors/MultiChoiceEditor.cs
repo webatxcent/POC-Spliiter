@@ -8,28 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
+using XCENT.Core.UI.WinForms;
 
 namespace POC_Spliiter
 {
-    public partial class StringEditor : TextBox, IValueEditor
+    public partial class MultiChoiceEditor : MultiSelectDropDown, IValueEditor
     {
 
-        public StringEditor() {
+        public MultiChoiceEditor() : base() {
             InitializeComponent();
         }
 
         #region IValueEditor implementation
-      
-        protected override void OnEnter( EventArgs e ) {
-            base.OnEnter( e );
-            SelectAll();
-        }
-
 
         public Control Control {
             get {
                 return this as Control;
             }
+
         }
 
         public string Value {
@@ -37,14 +33,18 @@ namespace POC_Spliiter
         }
 
         public void Configure( ParameterDef parameterDef, string value ) {
-            Text = value; 
+
+            var myData = parameterDef.Choices.Select( m => new MultiSelectDropDownItem { Display = m, Value = m, IsSelected = ( value.Contains( m ) ) } ).ToList();
+            base.Items = myData;
+
         }
 
-        public new int PreferredHeight {
+        public int PreferredHeight {
             get {
                 return PreferredSize.Height;
             }
         }
+
 
         #endregion
     }

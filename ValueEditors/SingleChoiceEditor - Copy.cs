@@ -8,28 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
+using XCENT.Core.UI.WinForms;
 
 namespace POC_Spliiter
 {
-    public partial class StringEditor : TextBox, IValueEditor
+    public partial class SingleChoiceEditor : ComboBoxEx, IValueEditor
     {
 
-        public StringEditor() {
+        public SingleChoiceEditor() : base() {
             InitializeComponent();
+            RequireMatch = true;
         }
 
         #region IValueEditor implementation
-      
-        protected override void OnEnter( EventArgs e ) {
-            base.OnEnter( e );
-            SelectAll();
-        }
-
 
         public Control Control {
             get {
                 return this as Control;
             }
+
         }
 
         public string Value {
@@ -37,7 +34,14 @@ namespace POC_Spliiter
         }
 
         public void Configure( ParameterDef parameterDef, string value ) {
-            Text = value; 
+
+            this.DisplayMember = "display";
+            this.ValueMember = "value";
+            foreach ( string choice in parameterDef.Choices ) {
+                this.Items.Add(new { value = choice, display = choice } );
+            }
+
+
         }
 
         public new int PreferredHeight {
@@ -45,6 +49,7 @@ namespace POC_Spliiter
                 return PreferredSize.Height;
             }
         }
+
 
         #endregion
     }

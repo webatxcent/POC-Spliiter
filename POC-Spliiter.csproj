@@ -63,6 +63,24 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ValueEditors\SingleChoiceEditor - Copy.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ValueEditors\SingleChoiceEditor - Copy.Designer.cs">
+      <DependentUpon>SingleChoiceEditor - Copy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ValueEditors\MultiChoiceEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ValueEditors\MultiChoiceEditor.Designer.cs">
+      <DependentUpon>MultiChoiceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ValueEditors\NumberEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ValueEditors\NumberEditor.Designer.cs">
+      <DependentUpon>NumberEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="ValueEditors\IValueEditor.cs" />
     <Compile Include="ParameterContainer.cs">
       <SubType>UserControl</SubType>
@@ -89,6 +107,12 @@
     </Compile>
     <Compile Include="ValueEditors\BoolEditor.Designer.cs">
       <DependentUpon>BoolEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ValueEditors\DateEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ValueEditors\DateEditor.Designer.cs">
+      <DependentUpon>DateEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\StringEditor.cs">
       <SubType>Component</SubType>

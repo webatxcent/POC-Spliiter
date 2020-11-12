@@ -18,7 +18,7 @@ namespace POC_Splitter
     {
         None,
         First,
-        Previous, 
+        Previous,
         Next,
         Last
     }
@@ -36,6 +36,7 @@ namespace POC_Splitter
 
         public ParameterValue( ParameterDef parameterDef, string value ) {
             InitializeComponent();
+            this.BackColor = Color.White;
 
             //this is used for locating controls.
             Name = parameterDef.Name;
@@ -52,7 +53,23 @@ namespace POC_Splitter
             else if ( parameterDef.ModuleParameterType == ModuleParameterType.Bool ) {
                 _editor = new BoolEditor();
             }
+            else if ( parameterDef.ModuleParameterType == ModuleParameterType.Date ) {
+                _editor = new DateEditor();
+            }
+            else if ( parameterDef.ModuleParameterType == ModuleParameterType.Number ) {
+                _editor = new NumberEditor();
+            }
+            else if ( parameterDef.ModuleParameterType == ModuleParameterType.Choice ) {
+                if ( parameterDef.AllowMultipleSelections ) {
+                    _editor = new MultiChoiceEditor();
+                }
+                else { //this this is a single select situation 
+                    _editor = new SingleChoiceEditor();
+                }
+            }
+            else if ( parameterDef.ModuleParameterType == ModuleParameterType.ListString ) {
 
+            }
             Controls.Add( _editor.Control );
 
             _editor.Configure( parameterDef, value );

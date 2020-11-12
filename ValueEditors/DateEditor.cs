@@ -8,23 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
+using XCENT.Core.UI.WinForms;
 
 namespace POC_Spliiter
 {
-    public partial class StringEditor : TextBox, IValueEditor
+    public partial class DateEditor : DateBox, IValueEditor
     {
 
-        public StringEditor() {
+        public DateEditor() {
             InitializeComponent();
         }
 
         #region IValueEditor implementation
-      
-        protected override void OnEnter( EventArgs e ) {
-            base.OnEnter( e );
-            SelectAll();
-        }
-
 
         public Control Control {
             get {
