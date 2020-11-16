@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 using XCENT.Core.UI.WinForms;
 
-namespace POC_Spliiter
+namespace POC_Splitter
 {
     public partial class MultiChoiceEditor : MultiSelectDropDown, IValueEditor
     {

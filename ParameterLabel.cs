@@ -10,8 +10,8 @@ using System.Windows.Forms;
 
 namespace POC_Splitter
 {
-    public delegate void ShowHelpHandler( string Name );
-    public delegate void SetFormulaHandler( string Name );
+    public delegate void ShowHelpHandler( string name );
+    public delegate void SetFormulaHandler( string name );
 
     public partial class ParameterLabel : UserControl
     {
@@ -19,16 +19,25 @@ namespace POC_Splitter
         int _margin;
         bool _isRequired;
 
+        AppFonts _fonts;
+
         public event ShowHelpHandler ShowHelp;
         public event SetFormulaHandler SetFormula;
 
-        public ParameterLabel( string name, string caption, bool isRequired, int margin ) {
+        public ParameterLabel( string name, string caption, bool isRequired, bool hasInfo, bool canAssignVariable, int margin ) {
             InitializeComponent();
 
             lblCaption.Text = caption;
 
-            btnFormula.Click += OnFormulaClick;
+            btnHelp.Text = "\uF30F";
             btnHelp.Click += OnHelpClick;
+            btnHelp.ForeColor = Color.CornflowerBlue;
+            btnHelp.Enabled = hasInfo;
+
+            btnFormula.Text = "\uf68b";
+            btnFormula.Click += OnFormulaClick;
+            btnFormula.ForeColor = Color.CornflowerBlue;
+            btnFormula.Enabled = canAssignVariable;
 
             _parameterName = name;
             _margin = margin;
@@ -52,6 +61,17 @@ namespace POC_Splitter
 
         internal void SetFont( Font font ) {
             lblCaption.Font = new Font( font, ( _isRequired ) ? FontStyle.Bold : FontStyle.Regular );
+
+            if ( _fonts == null )
+                _fonts = new AppFonts( Parent.Font.Size * 1.2f);
+
+            if ( _fonts.Size != Parent.Font.Size * 1.2f ) {
+                _fonts.Dispose();
+                _fonts = new AppFonts( Parent.Font.Size );
+            }
+
+            btnHelp.Font = new Font( _fonts.FARegular, FontStyle.Regular );
+            btnFormula.Font = new Font( _fonts.FARegular, FontStyle.Regular );
         }
 
         private void OnCaptionClick( object sender, EventArgs e ) {
@@ -79,7 +99,7 @@ namespace POC_Splitter
             btnHelp.Top = btnFormula.Top;
             btnHelp.Height = btnFormula.Height;
             btnHelp.Width = btnFormula.Width;
-            btnHelp.Left = btnFormula.Left - _margin  - btnHelp.Width;
+            btnHelp.Left = btnFormula.Left - _margin - btnHelp.Width;
 
             lblCaption.Top = ( Height - lblCaption.Height ) / 2;
             lblCaption.Height = btnFormula.Height;
@@ -88,7 +108,10 @@ namespace POC_Splitter
 
         }
 
-
+        protected override void DestroyHandle() {
+            _fonts.Dispose();
+            base.DestroyHandle();
+        }
 
 
     }

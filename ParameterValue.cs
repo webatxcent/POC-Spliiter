@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using XCENT.JobServer.Abstract;
-using POC_Spliiter;
 
 namespace POC_Splitter
 {
@@ -25,6 +24,7 @@ namespace POC_Splitter
 
     public delegate void MoveFocusHandler( ParameterValue source, MoveFocus moveFocus );
     public delegate void SyncLabelsHandler();
+    public delegate string ResolveVariable( string variable );
 
     public partial class ParameterValue : UserControl
     {
@@ -33,10 +33,21 @@ namespace POC_Splitter
 
         IValueEditor _editor;
         TextBox _proxy; //stand-in for ideal height of the control
+        ResolveVariable _resolveVariable;
+        AppFonts _fonts;
+        int _margin;
 
-        public ParameterValue( ParameterDef parameterDef, string value ) {
+        public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolveVariable, int margin ) {
             InitializeComponent();
-            this.BackColor = Color.White;
+
+            _resolveVariable = resolveVariable;
+            _margin = margin;
+
+            btnClear.Text = "\uf057";
+            btnClear.Click += OnClearClick;
+            btnClear.ForeColor = Color.Red;
+
+            this.BackColor = SystemColors.Control;
 
             //this is used for locating controls.
             Name = parameterDef.Name;
@@ -74,7 +85,49 @@ namespace POC_Splitter
 
             _editor.Configure( parameterDef, value );
             _editor.Control.KeyDown += OnValueControlKeyDown;
+
+            ConfigureControls( value );
         }
+
+        protected override void OnParentChanged( EventArgs e ) {
+            if ( Parent != null )
+                SetFont( Parent.Font );
+        }
+
+        internal void SetFont( Font font ) {
+            lblVariable.Font = new Font( font, FontStyle.Regular );
+
+            if ( _fonts == null )
+                _fonts = new AppFonts( Parent.Font.Size * 1.2f );
+
+            if ( _fonts.Size != Parent.Font.Size * 1.2f ) {
+                _fonts.Dispose();
+                _fonts = new AppFonts( Parent.Font.Size );
+            }
+
+            btnClear.Font = new Font( _fonts.FARegular, FontStyle.Regular );
+        }
+
+        private void OnClearClick( object sender, EventArgs e ) {
+            _editor.Control.Text = "";
+            ConfigureControls();
+        }
+
+        void ConfigureControls( string value = null ) {
+            bool isVariableReference;
+            if ( value == null )
+                isVariableReference = false;
+            else
+                isVariableReference = value.StartsWith( "{" ) && value.EndsWith( "}" );
+
+            _editor.Control.Visible = !isVariableReference;
+            lblVariable.Visible = isVariableReference;
+            btnClear.Visible = isVariableReference;
+
+            if ( isVariableReference )
+                lblVariable.Text = _resolveVariable( value );
+        }
+
 
         /// <summary>
         /// This event handler is needed to compensate for a problem in the parent container control where small scrollbar movements,
@@ -112,16 +165,37 @@ namespace POC_Splitter
 
         protected override void OnResize( EventArgs e ) {
             base.OnResize( e );
-            if ( _editor == null )
+
+            if ( _proxy == null )
                 return;
+
             var minHeight = _proxy.PreferredHeight;
+
             if ( _editor.PreferredHeight < minHeight ) {
                 Height = minHeight;
                 _editor.Control.Height = minHeight;
             }
             else
                 Height = _editor.PreferredHeight;
+
             _editor.Control.Width = Width;
+
+            btnClear.Top = 0;
+            btnClear.Left = 0;
+            btnClear.Height = _proxy.PreferredHeight;
+            btnClear.Width = btnClear.Height;
+
+            lblVariable.Top = ( Height - btnClear.Height ) / 2;
+            lblVariable.Left = btnClear.Left + btnClear.Width + _margin;
+            lblVariable.Height = btnClear.Height;
+            lblVariable.MaximumSize = new Size( Width - lblVariable.Left - _margin, lblVariable.Height );
+
+
         }
+
+
+
+
+
     }
 }

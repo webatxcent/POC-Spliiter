@@ -32,6 +32,8 @@
             // 
             // btnFormula
             // 
+            this.btnFormula.FlatAppearance.BorderSize = 0;
+            this.btnFormula.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnFormula.Location = new System.Drawing.Point(296, 3);
             this.btnFormula.Margin = new System.Windows.Forms.Padding(0);
             this.btnFormula.Name = "btnFormula";
@@ -43,6 +45,8 @@
             // 
             // btnHelp
             // 
+            this.btnHelp.FlatAppearance.BorderSize = 0;
+            this.btnHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHelp.Location = new System.Drawing.Point(264, 3);
             this.btnHelp.Margin = new System.Windows.Forms.Padding(0);
             this.btnHelp.Name = "btnHelp";
@@ -67,7 +71,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.lblCaption);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnFormula);

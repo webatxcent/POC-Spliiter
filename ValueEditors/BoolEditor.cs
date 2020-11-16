@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 
-namespace POC_Spliiter
+namespace POC_Splitter
 {
     public partial class BoolEditor : CheckBox, IValueEditor
     {
 
         public BoolEditor(): base() {
             InitializeComponent();
+            BackColor = SystemColors.Control;
+            Padding = new Padding( 2, 0, 0, 0 );
         }
 
         #region IValueEditor implementation

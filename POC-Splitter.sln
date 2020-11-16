@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC-Spliiter", "POC-Spliiter.csproj", "{DAC5FDDD-5586-4B62-9822-A7DCD004891E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC-Splitter", "POC-Splitter.csproj", "{DAC5FDDD-5586-4B62-9822-A7DCD004891E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

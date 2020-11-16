@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{DAC5FDDD-5586-4B62-9822-A7DCD004891E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>POC_Spliiter</RootNamespace>
-    <AssemblyName>POC-Spliiter</AssemblyName>
+    <RootNamespace>POC_Splitter</RootNamespace>
+    <AssemblyName>POC-Splitter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -38,6 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>libs\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,19 +58,27 @@
     <Reference Include="XCENT.JobServer.Abstract">
       <HintPath>libs\XCENT.JobServer.Abstract.dll</HintPath>
     </Reference>
+    <Reference Include="XCENT.JobServer.Api">
+      <HintPath>libs\XCENT.JobServer.Api.dll</HintPath>
+    </Reference>
+    <Reference Include="XCENT.JobServer.Api.Models">
+      <HintPath>libs\XCENT.JobServer.Api.Models.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppFonts.cs" />
+    <Compile Include="Credentials.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\SingleChoiceEditor - Copy.cs">
+    <Compile Include="ValueEditors\SingleChoiceEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\SingleChoiceEditor - Copy.Designer.cs">
-      <DependentUpon>SingleChoiceEditor - Copy.cs</DependentUpon>
+    <Compile Include="ValueEditors\SingleChoiceEditor.Designer.cs">
+      <DependentUpon>SingleChoiceEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ValueEditors\MultiChoiceEditor.cs">
       <SubType>UserControl</SubType>
@@ -151,6 +162,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Resources\Font Awesome 5 Pro-Light-300.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Font Awesome 5 Pro-Regular-400.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Font Awesome 5 Pro-Solid-900.otf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
