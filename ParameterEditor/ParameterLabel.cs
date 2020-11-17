@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace POC_Splitter
 {
     public delegate void ShowHelpHandler( string name );
-    public delegate void SetFormulaHandler( string name );
+    public delegate void SetFormulaHandler( ParameterValue parameterValue, string name );
 
     public partial class ParameterLabel : UserControl
     {
@@ -34,7 +34,8 @@ namespace POC_Splitter
             btnHelp.ForeColor = Color.CornflowerBlue;
             btnHelp.Enabled = hasInfo;
 
-            btnFormula.Text = "\uf68b";
+            btnFormula.Text = "\uf661";
+            btnFormula.Padding = new Padding( 0 );
             btnFormula.Click += OnFormulaClick;
             btnFormula.ForeColor = Color.CornflowerBlue;
             btnFormula.Enabled = canAssignVariable;
@@ -84,7 +85,7 @@ namespace POC_Splitter
         }
 
         private void OnFormulaClick( object sender, EventArgs e ) {
-            SetFormula?.Invoke( _parameterName );
+            SetFormula?.Invoke( this.Tag as ParameterValue, _parameterName );
             ( Tag as Control ).Focus();
         }
 

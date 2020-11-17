@@ -74,74 +74,83 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\SingleChoiceEditor.cs">
+    <Compile Include="ParameterEditor\ParameterVariables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ParameterEditor\ParameterVariables.Designer.cs">
+      <DependentUpon>ParameterVariables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterEditor\ValueEditors\SingleChoiceEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\SingleChoiceEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\SingleChoiceEditor.Designer.cs">
       <DependentUpon>SingleChoiceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\MultiChoiceEditor.cs">
+    <Compile Include="ParameterEditor\ValueEditors\MultiChoiceEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ValueEditors\MultiChoiceEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\MultiChoiceEditor.Designer.cs">
       <DependentUpon>MultiChoiceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\NumberEditor.cs">
+    <Compile Include="ParameterEditor\ValueEditors\NumberEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\NumberEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\NumberEditor.Designer.cs">
       <DependentUpon>NumberEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\IValueEditor.cs" />
-    <Compile Include="ParameterContainer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\IValueEditor.cs" />
+    <Compile Include="ParameterEditor\ParameterEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParameterContainer.Designer.cs">
-      <DependentUpon>ParameterContainer.cs</DependentUpon>
+    <Compile Include="ParameterEditor\ParameterEditor.Designer.cs">
+      <DependentUpon>ParameterEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParameterLabel.cs">
+    <Compile Include="ParameterEditor\ParameterLabel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParameterLabel.Designer.cs">
+    <Compile Include="ParameterEditor\ParameterLabel.Designer.cs">
       <DependentUpon>ParameterLabel.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParameterValue.cs">
+    <Compile Include="ParameterEditor\ParameterValue.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ParameterValue.Designer.cs">
+    <Compile Include="ParameterEditor\ParameterValue.Designer.cs">
       <DependentUpon>ParameterValue.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ValueEditors\BoolEditor.cs">
+    <Compile Include="ParameterEditor\ValueEditors\BoolEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\BoolEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\BoolEditor.Designer.cs">
       <DependentUpon>BoolEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\DateEditor.cs">
+    <Compile Include="ParameterEditor\ValueEditors\DateEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\DateEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\DateEditor.Designer.cs">
       <DependentUpon>DateEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ValueEditors\StringEditor.cs">
+    <Compile Include="ParameterEditor\ValueEditors\StringEditor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ValueEditors\StringEditor.Designer.cs">
+    <Compile Include="ParameterEditor\ValueEditors\StringEditor.Designer.cs">
       <DependentUpon>StringEditor.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterContainer.resx">
-      <DependentUpon>ParameterContainer.cs</DependentUpon>
+    <EmbeddedResource Include="ParameterEditor\ParameterEditor.resx">
+      <DependentUpon>ParameterEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterLabel.resx">
+    <EmbeddedResource Include="ParameterEditor\ParameterLabel.resx">
       <DependentUpon>ParameterLabel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParameterValue.resx">
+    <EmbeddedResource Include="ParameterEditor\ParameterValue.resx">
       <DependentUpon>ParameterValue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ParameterEditor\ParameterVariables.resx">
+      <DependentUpon>ParameterVariables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

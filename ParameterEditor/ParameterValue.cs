@@ -37,6 +37,9 @@ namespace POC_Splitter
         AppFonts _fonts;
         int _margin;
 
+        public ParameterDef ParameterDef { get; internal set; }
+
+
         public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolveVariable, int margin ) {
             InitializeComponent();
 
@@ -49,6 +52,7 @@ namespace POC_Splitter
 
             this.BackColor = SystemColors.Control;
 
+            ParameterDef = parameterDef;
             //this is used for locating controls.
             Name = parameterDef.Name;
 
@@ -83,10 +87,9 @@ namespace POC_Splitter
             }
             Controls.Add( _editor.Control );
 
-            _editor.Configure( parameterDef, value );
             _editor.Control.KeyDown += OnValueControlKeyDown;
 
-            ConfigureControls( value );
+            SetValue( value );
         }
 
         protected override void OnParentChanged( EventArgs e ) {
@@ -188,14 +191,15 @@ namespace POC_Splitter
             lblVariable.Top = ( Height - btnClear.Height ) / 2;
             lblVariable.Left = btnClear.Left + btnClear.Width + _margin;
             lblVariable.Height = btnClear.Height;
+            lblVariable.Width = Width - lblVariable.Left - _margin;
             lblVariable.MaximumSize = new Size( Width - lblVariable.Left - _margin, lblVariable.Height );
 
 
         }
 
-
-
-
-
+        internal void SetValue( string value ) {
+            _editor.Configure( ParameterDef, value );
+            ConfigureControls( value );
+        }
     }
 }

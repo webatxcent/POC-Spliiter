@@ -1,5 +1,5 @@
 ﻿namespace POC_Splitter {
-    partial class ParameterContainer {
+    partial class ParameterEditor {
         /// <summary> 
         /// Required designer variable.
         /// </summary>

@@ -23,7 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.parameterContainer1 = new POC_Splitter.ParameterContainer();
+            this.parameterContainer1 = new POC_Splitter.ParameterEditor();
             this.btnTrigger = new System.Windows.Forms.Button();
             this.btnStep1 = new System.Windows.Forms.Button();
             this.btnStep2 = new System.Windows.Forms.Button();
@@ -102,7 +102,7 @@
 
         #endregion
 
-        private ParameterContainer parameterContainer1;
+        private ParameterEditor parameterContainer1;
         private System.Windows.Forms.Button btnTrigger;
         private System.Windows.Forms.Button btnStep1;
         private System.Windows.Forms.Button btnStep2;

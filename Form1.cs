@@ -39,13 +39,23 @@ namespace POC_Splitter {
                 module = (IModule)Program.modules.First( m => m.Id == step.ExecutionModuleId && m.Type == ModuleType.Executable );
                 parameters = step.Parameters;
             }
+            
 
+            //build list of variables based on step you are on.
             List<IModule> modules = Program.modules.Select( m => m as IModule ).ToList<IModule>();
             if ( editStep > 0 )
                 SyntaxChecker.GetVariablesForStep( Program.job, modules, (int)editStep - 1, variables );
 
+            //Givens:
+            //1. parameter defs for the module in question. Module can be a Trigger.
+            //2. any existing parameter values.
+            //3. variables
+            //4. globals
+
+
             parameterContainer1.LoadParameterData( module.ParameterDefs, parameters, variables, Program.globals );
             parameterContainer1.Focus();
+
         }
 
 

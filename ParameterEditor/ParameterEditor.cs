@@ -13,7 +13,7 @@ using XCENT.JobServer.Api.Models;
 
 namespace POC_Splitter
 {
-    public partial class ParameterContainer : UserControl
+    public partial class ParameterEditor : UserControl
     {
 
         const int _margin = 4;
@@ -22,7 +22,7 @@ namespace POC_Splitter
         List<ParameterDef> _parameterDefs;
         Parameters _parameters;
 
-        public ParameterContainer() {
+        public ParameterEditor() {
             InitializeComponent();
         }
 
@@ -414,11 +414,17 @@ namespace POC_Splitter
                     }
                 }
             }
-
         }
 
-        private void OnSetFormula( string name ) {
-            MessageBox.Show( $"Show formula dialog for {name}" );
+        private void OnSetFormula( ParameterValue valueControl, string name  ) {
+
+            ParameterVariables dialog = new ParameterVariables( valueControl.ParameterDef.Caption, _globals, _variables );
+            
+            DialogResult result = dialog.ShowDialog();
+
+            if ( result == DialogResult.OK ) {
+                valueControl.SetValue( dialog.Reference );
+            }
         }
 
         private void OnShowHelp( string name ) {
