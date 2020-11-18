@@ -22,6 +22,21 @@ namespace POC_Splitter
         List<ParameterDef> _parameterDefs;
         Parameters _parameters;
 
+        public Parameters Parameters {
+            get {
+                Parameters parameters = new Parameters();
+
+                foreach ( Control c in this.splitContainer.Panel2.Controls ) {
+                    ParameterValue parameterValue = c as ParameterValue;
+                    parameters.Add( new Parameter { Name = parameterValue.Name, Value = parameterValue.Value } );
+                }
+
+                return parameters;
+
+            }
+        }
+
+
         public ParameterEditor() {
             InitializeComponent();
         }
@@ -73,7 +88,7 @@ namespace POC_Splitter
         }
 
         string Resolver( string variableName ) {
-            if ( variableName.StartsWith( "{::")) {
+            if ( variableName.StartsWith( "{::" ) ) {
                 var name = variableName.Replace("{::", "").Replace("}", "");
                 var global = _globals.Find( m => m.Symbol == name );
                 return global.Value;
@@ -81,7 +96,10 @@ namespace POC_Splitter
             else {
                 var name = variableName.Replace( "{", "").Replace("}", "");
                 var variable = _variables.Find( m=>m.Name == name);
-                return variable.Name;
+                if ( variable == null )
+                    return "<undefined>";
+                else
+                    return variable.Name;
             }
         }
 
@@ -367,6 +385,12 @@ namespace POC_Splitter
 
         }
 
+        protected override void OnEnter( EventArgs e ) {
+            base.OnEnter( e );
+            if ( splitContainer.Panel2.Controls.Count > 0 )
+                splitContainer.Panel2.Controls[ 0 ].Focus();
+        }
+
         private void LayoutControls() {
             int nextTop = 0;
             foreach ( Control control in splitContainer.Panel2.Controls ) {
@@ -416,14 +440,14 @@ namespace POC_Splitter
             }
         }
 
-        private void OnSetFormula( ParameterValue valueControl, string name  ) {
+        private void OnSetFormula( ParameterValue valueControl, string name ) {
 
-            ParameterVariables dialog = new ParameterVariables( valueControl.ParameterDef.Caption, _globals, _variables );
-            
+            ParameterVariables dialog = new ParameterVariables( valueControl.ParameterDef.Caption, valueControl.Value, _globals, _variables );
+
             DialogResult result = dialog.ShowDialog();
 
             if ( result == DialogResult.OK ) {
-                valueControl.SetValue( dialog.Reference );
+                valueControl.Value = dialog.Reference;
             }
         }
 

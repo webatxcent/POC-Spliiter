@@ -36,9 +36,9 @@ namespace POC_Splitter
         ResolveVariable _resolveVariable;
         AppFonts _fonts;
         int _margin;
+        bool _hasFocus;
 
         public ParameterDef ParameterDef { get; internal set; }
-
 
         public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolveVariable, int margin ) {
             InitializeComponent();
@@ -58,7 +58,11 @@ namespace POC_Splitter
 
             //establish minimum height for the control which is based on the textbox. This can always be overridden when implementing PreferredHeight in the Value editors.
             _proxy = new TextBox();
-            _proxy.Visible = false;
+            _proxy.Location = new Point( -1000, -1000 ) ;
+            _proxy.TabStop = false;
+            _proxy.Enter += _proxy_Enter;
+            _proxy.Leave += _proxy_Leave;
+            _proxy.KeyDown += _proxy_KeyDown;
             Controls.Add( _proxy );
 
 
@@ -83,13 +87,55 @@ namespace POC_Splitter
                 }
             }
             else if ( parameterDef.ModuleParameterType == ModuleParameterType.ListString ) {
-
+                _editor = new StringEditor();
             }
+
+            _editor.Control.Name = parameterDef.Name;
             Controls.Add( _editor.Control );
-
             _editor.Control.KeyDown += OnValueControlKeyDown;
+            _editor.SetMoveFocusHandler( MoveFocusHandler );
 
-            SetValue( value );
+
+            Value = value;
+        }
+
+        private void _proxy_KeyDown( object sender, KeyEventArgs e ) {
+            MoveFocus action = ParameterValue.EvaluateKey( e );
+
+            if ( action != MoveFocus.None ) {
+                e.Handled = true;
+                FocusChange?.Invoke( this, action );
+            }
+        }
+
+        /// <summary>
+        /// this is a special delegate that is called from editor implementations that may do something with the up and down keys such as the NumberBox which swallows those values
+        /// because the base TextBox will use them to navigate left and right.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="action"></param>
+        private void MoveFocusHandler( Control control, MoveFocus action ) {
+            FocusChange?.Invoke( this, action );
+        }
+
+        //DEBUG PURPOSES - can be removed
+        private void _proxy_Leave( object sender, EventArgs e ) {
+            _hasFocus = false;
+            Debug.Print( "left _proxy." );
+            Invalidate();
+        }
+
+        //DEBUG PURPOSES - can be removed
+        private void _proxy_Enter( object sender, EventArgs e ) {
+            _hasFocus = true;
+            Debug.Print( "entered _proxy." );
+            Invalidate();
+        }
+
+        protected override void OnPaint( PaintEventArgs e ) {
+            base.OnPaint( e );
+            if ( _hasFocus || _editor.RequiresFocusRectangle  )
+                ControlPaint.DrawFocusRectangle( e.Graphics, this.ClientRectangle, SystemColors.ActiveBorder, SystemColors.Control );
         }
 
         protected override void OnParentChanged( EventArgs e ) {
@@ -101,9 +147,9 @@ namespace POC_Splitter
             lblVariable.Font = new Font( font, FontStyle.Regular );
 
             if ( _fonts == null )
-                _fonts = new AppFonts( Parent.Font.Size * 1.2f );
+                _fonts = new AppFonts( Parent.Font.Size * 1.1f );
 
-            if ( _fonts.Size != Parent.Font.Size * 1.2f ) {
+            if ( _fonts.Size != Parent.Font.Size * 1.1f ) {
                 _fonts.Dispose();
                 _fonts = new AppFonts( Parent.Font.Size );
             }
@@ -117,17 +163,18 @@ namespace POC_Splitter
         }
 
         void ConfigureControls( string value = null ) {
-            bool isVariableReference;
+            bool isVariableRef;
+
             if ( value == null )
-                isVariableReference = false;
+                isVariableRef = false;
             else
-                isVariableReference = value.StartsWith( "{" ) && value.EndsWith( "}" );
+                isVariableRef = value.StartsWith( "{" ) && value.EndsWith( "}" );
 
-            _editor.Control.Visible = !isVariableReference;
-            lblVariable.Visible = isVariableReference;
-            btnClear.Visible = isVariableReference;
+            _editor.Control.Visible = !isVariableRef;
+            lblVariable.Visible = isVariableRef;
+            btnClear.Visible = isVariableRef;
 
-            if ( isVariableReference )
+            if ( isVariableRef )
                 lblVariable.Text = _resolveVariable( value );
         }
 
@@ -143,22 +190,8 @@ namespace POC_Splitter
             SyncLabels?.Invoke();
         }
 
-
         private void OnValueControlKeyDown( object sender, KeyEventArgs e ) {
-            MoveFocus action = MoveFocus.None;
-
-            if ( e.Modifiers == Keys.Control && e.KeyCode == Keys.Home ) {
-                action = MoveFocus.First;
-            }
-            else if ( e.Modifiers == Keys.Control && e.KeyCode == Keys.End ) {
-                action = MoveFocus.Last;
-            }
-            else if ( e.Modifiers == 0 && e.KeyCode == Keys.Up ) {
-                action = MoveFocus.Previous;
-            }
-            else if ( e.Modifiers == 0 && e.KeyCode == Keys.Down ) {
-                action = MoveFocus.Next;
-            }
+            MoveFocus action = ParameterValue.EvaluateKey( e );
 
             if ( action != MoveFocus.None ) {
                 e.Handled = true;
@@ -183,23 +216,56 @@ namespace POC_Splitter
 
             _editor.Control.Width = Width;
 
-            btnClear.Top = 0;
-            btnClear.Left = 0;
-            btnClear.Height = _proxy.PreferredHeight;
-            btnClear.Width = btnClear.Height;
+            if ( _editor.RequiresFocusRectangle ) {
+                var rc = _editor.Control.DisplayRectangle;
+                rc.Inflate( -1, -1 );
+                _editor.Control.Size = rc.Size;
+                _editor.Control.Location = rc.Location;
+            }
 
-            lblVariable.Top = ( Height - btnClear.Height ) / 2;
-            lblVariable.Left = btnClear.Left + btnClear.Width + _margin;
-            lblVariable.Height = btnClear.Height;
-            lblVariable.Width = Width - lblVariable.Left - _margin;
-            lblVariable.MaximumSize = new Size( Width - lblVariable.Left - _margin, lblVariable.Height );
+            lblVariable.Top = ( Height - lblVariable.PreferredHeight ) / 2;
+            lblVariable.Left = 1;
+            lblVariable.Height = lblVariable.PreferredHeight;
+            lblVariable.Width = Width - ( _proxy.PreferredHeight - 2 )- _margin;
+            lblVariable.MaximumSize = new Size( Width - _proxy.PreferredHeight - _margin, lblVariable.Height );
 
-
+            btnClear.Top = 1;
+            btnClear.Left = lblVariable.Left + lblVariable.Width + _margin;
+            btnClear.Height = _proxy.PreferredHeight - 2 ;
+            btnClear.Width = _proxy.PreferredHeight - 2;
         }
 
-        internal void SetValue( string value ) {
-            _editor.Configure( ParameterDef, value );
-            ConfigureControls( value );
+        public string Value {
+            get {
+                return _editor.Value;
+            }
+            set {
+                _editor.Configure( ParameterDef, value );
+                ConfigureControls( value );
+            }
+        }
+
+        private void lblVariable_MouseDown( object sender, MouseEventArgs e ) {
+            _proxy.Focus();
+        }
+
+        internal static MoveFocus EvaluateKey( KeyEventArgs e ) {
+            MoveFocus action = MoveFocus.None;
+
+            if ( e.Modifiers == Keys.Control && e.KeyCode == Keys.Home ) {
+                action = MoveFocus.First;
+            }
+            else if ( e.Modifiers == Keys.Control && e.KeyCode == Keys.End ) {
+                action = MoveFocus.Last;
+            }
+            else if ( e.Modifiers == 0 && e.KeyCode == Keys.Up ) {
+                action = MoveFocus.Previous;
+            }
+            else if ( e.Modifiers == 0 && e.KeyCode == Keys.Down ) {
+                action = MoveFocus.Next;
+            }
+
+            return action;
         }
     }
 }

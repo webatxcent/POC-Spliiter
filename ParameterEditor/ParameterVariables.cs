@@ -12,8 +12,7 @@ using XCENT.JobServer.Api.Models;
 
 namespace POC_Splitter
 {
-
-    public partial class ParameterVariables : Form
+      public partial class ParameterVariables : Form
     {
 
         class GridRow
@@ -29,9 +28,9 @@ namespace POC_Splitter
             public GridRow( bool isGlobal, ModuleParameterDirection? direction, string name, string value, string description ) {
 
                 if ( isGlobal )
-                    Global = "\uf0ac";
+                    Global = "\uf0ac"; //global
                 else
-                    Global = "\uf52c";
+                    Global = "\uf52c"; //equal sign
 
                 if ( direction == null )
                     Direction = "";
@@ -40,7 +39,7 @@ namespace POC_Splitter
                 else if ( direction.Value == ModuleParameterDirection.Out )
                     Direction = "\uf30c";
                 else if ( direction.Value == ModuleParameterDirection.InOut )
-                    Direction = "\uf883"; //"\uf338";
+                    Direction = "\uf883"; 
 
                 Name = name;
                 Value = value;
@@ -58,10 +57,11 @@ namespace POC_Splitter
         List<Variable> _variables;
         List<GlobalDtoForView> _globals;
         AppFonts _fonts;
+        bool _isLoading = false;
 
         public string Reference { get; internal set; }
 
-        public ParameterVariables( string caption, List<GlobalDtoForView> globals, List<Variable> variables ) {
+        public ParameterVariables( string caption, string currentValue, List<GlobalDtoForView> globals, List<Variable> variables ) {
             InitializeComponent();
 
             Text = $"Assign a variable for: \"{caption}\"";
@@ -71,73 +71,104 @@ namespace POC_Splitter
 
             _fonts = new AppFonts( dgvVariables.Font.Size * 1.2f );
 
-            LoadGrid();
+            LoadGrid( currentValue );
         }
 
-        void LoadGrid() {
+        void LoadGrid( string valueSelector = null ) {
             List<GridRow> rows = new List<GridRow>();
 
-            rows.AddRange(
-                _globals.Select( m => new GridRow( true, null, m.Symbol, m.Value, m.Description ) ).ToList());
+            _isLoading = true;
 
-            rows.AddRange(
-                _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, m.Name, null, null ) ).ToList()
-                );
+            try {
 
-            dgvVariables.Columns.Clear();
+                //determine first if the initial value selector is among the normally filtered out IN variables, if so then set the checkbox.
+                if ( !String.IsNullOrEmpty( valueSelector ) )
+                    chkIncludeInputVariables.Checked = _variables.Any( m => m.Direction == ModuleParameterDirection.In && m.Reference() == valueSelector );
 
-            dgvVariables.DataSource = rows;
+                rows.AddRange(
+                    _globals.Select( m => new GridRow( true, null, m.Symbol, m.Value, m.Description ) ).ToList() );
 
-            dgvVariables.Columns[ "Global" ].DefaultCellStyle.Font = new Font( _fonts.FARegular, FontStyle.Regular );
-            dgvVariables.Columns[ "Direction" ].DefaultCellStyle.Font = new Font( _fonts.FARegular, FontStyle.Regular );
-            dgvVariables.Columns[ "Global" ].HeaderCell.Value = "";
-            dgvVariables.Columns[ "Direction" ].HeaderCell.Value = "";
+                rows.AddRange(
+                    _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, m.Name, null, null ) ).ToList()
+                    );
 
-            dgvVariables.Columns[ "Reference" ].Visible = false;
+                dgvVariables.Columns.Clear();
 
+                dgvVariables.DataSource = rows;
+
+                dgvVariables.Columns[ "Global" ].DefaultCellStyle.Font = new Font( _fonts.FARegular, FontStyle.Regular );
+                dgvVariables.Columns[ "Direction" ].DefaultCellStyle.Font = new Font( _fonts.FARegular, FontStyle.Regular );
+                dgvVariables.Columns[ "Global" ].HeaderCell.Value = "";
+                dgvVariables.Columns[ "Direction" ].HeaderCell.Value = "";
+
+                dgvVariables.Columns[ "Reference" ].Visible = false;
+
+                dgvVariables.AutoResizeRows();
+
+                if ( String.IsNullOrEmpty( valueSelector ) )
+                    return;
+
+                dgvVariables.ClearSelection();
+                foreach ( DataGridViewRow r in dgvVariables.Rows )
+                    if ( r.Cells[ "Reference" ].Value.ToString() == valueSelector ) {
+                        dgvVariables.CurrentCell = r.Cells[ 0 ];
+                        r.Selected = true;
+                        break;
+                    }
+
+                ///dgvVariables.Rows[ 1 ].Selected = true;
+
+            }
+            finally {
+                _isLoading = false;
+            }
         }
 
+        void SelectVariableAndClose( int rowIndex ) {
+            Reference = dgvVariables.Rows[ rowIndex ].Cells[ "Reference" ].Value.ToString();
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+
         private void chkIncludeInputVariables_CheckedChanged( object sender, EventArgs e ) {
+            if ( _isLoading )
+                return;
             LoadGrid();
         }
 
         private void dgvVariables_CellDoubleClick( object sender, DataGridViewCellEventArgs e ) {
-            if (e.RowIndex >= 0 ) {
-                Reference = dgvVariables.Rows[e.RowIndex].Cells["Reference"].Value.ToString();
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            if (e.RowIndex >= 0 )
+                SelectVariableAndClose( e.RowIndex );
+        }
+
+        private void btnSelect_Click( object sender, EventArgs e ) {
+            SelectVariableAndClose( dgvVariables.SelectedRows[ 0 ].Cells[ 0 ].RowIndex );
+        }
+
+        private void btnClear_Click( object sender, EventArgs e ) {
+            Reference = "";
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void dgvVariables_KeyDown( object sender, KeyEventArgs e ) {
+            if ( e.KeyCode == Keys.Enter )
+                SelectVariableAndClose( dgvVariables.SelectedRows[ 0 ].Cells[ 0 ].RowIndex );
         }
     }
 
-    class GridRow
+    static class VariablesExtension
     {
-        string Global { get; }
-        string Direction { get; }
-        string Name { get; }
-        string Value { get; }
-        string Description { get; }
-
-        public GridRow( bool isGlobal, ModuleParameterDirection? direction, string name, string value, string description ) {
-
-            if ( isGlobal )
-                Global = "G";
-            else
-                Global = "V";
-
-            if ( direction == null )
-                Direction = "";
-            else if ( direction.Value == ModuleParameterDirection.In )
-                Direction = "In";
-            else if ( direction.Value == ModuleParameterDirection.Out )
-                Direction = "Out";
-            else if ( direction.Value == ModuleParameterDirection.InOut )
-                Direction = "InOut";
-
-            Name = name;
-            Value = value;
-            Description = description;
+        static public string Reference( this Variable variable ) {
+            return $"{{{variable.Name}}}";
         }
+
+
+        static public string Reference( this IGlobal global ) {
+            return $"{{::{global.Symbol}}}";
+        }
+
     }
 
 

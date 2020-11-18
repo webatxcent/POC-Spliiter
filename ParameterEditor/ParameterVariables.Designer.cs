@@ -29,6 +29,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSelect = new System.Windows.Forms.Button();
             this.dgvVariables = new System.Windows.Forms.DataGridView();
+            this.btnClear = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).BeginInit();
             this.SuspendLayout();
             // 
@@ -36,11 +37,12 @@
             // 
             this.chkIncludeInputVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkIncludeInputVariables.AutoSize = true;
-            this.chkIncludeInputVariables.Location = new System.Drawing.Point(12, 444);
+            this.chkIncludeInputVariables.Location = new System.Drawing.Point(13, 746);
+            this.chkIncludeInputVariables.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkIncludeInputVariables.Name = "chkIncludeInputVariables";
-            this.chkIncludeInputVariables.Size = new System.Drawing.Size(134, 17);
+            this.chkIncludeInputVariables.Size = new System.Drawing.Size(185, 25);
             this.chkIncludeInputVariables.TabIndex = 1;
-            this.chkIncludeInputVariables.Text = "Include Input Variables";
+            this.chkIncludeInputVariables.Text = "&Include Input Variables";
             this.chkIncludeInputVariables.UseVisualStyleBackColor = true;
             this.chkIncludeInputVariables.CheckedChanged += new System.EventHandler(this.chkIncludeInputVariables_CheckedChanged);
             // 
@@ -48,25 +50,28 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(713, 444);
+            this.btnCancel.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Location = new System.Drawing.Point(1075, 735);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 32);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Size = new System.Drawing.Size(112, 36);
+            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnSelect
             // 
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSelect.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSelect.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelect.Location = new System.Drawing.Point(632, 444);
+            this.btnSelect.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelect.Location = new System.Drawing.Point(835, 735);
+            this.btnSelect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(75, 32);
-            this.btnSelect.TabIndex = 3;
-            this.btnSelect.Text = "Select";
+            this.btnSelect.Size = new System.Drawing.Size(112, 36);
+            this.btnSelect.TabIndex = 2;
+            this.btnSelect.Text = "&Select";
             this.btnSelect.UseVisualStyleBackColor = true;
+            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
             // 
             // dgvVariables
             // 
@@ -77,9 +82,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvVariables.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
+            this.dgvVariables.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvVariables.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dgvVariables.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVariables.Location = new System.Drawing.Point(12, 12);
+            this.dgvVariables.Location = new System.Drawing.Point(2, 2);
+            this.dgvVariables.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dgvVariables.MultiSelect = false;
             this.dgvVariables.Name = "dgvVariables";
             this.dgvVariables.RowHeadersVisible = false;
@@ -88,19 +95,39 @@
             this.dgvVariables.ShowCellToolTips = false;
             this.dgvVariables.ShowEditingIcon = false;
             this.dgvVariables.ShowRowErrors = false;
-            this.dgvVariables.Size = new System.Drawing.Size(776, 426);
-            this.dgvVariables.TabIndex = 5;
+            this.dgvVariables.Size = new System.Drawing.Size(1197, 723);
+            this.dgvVariables.TabIndex = 0;
             this.dgvVariables.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVariables_CellDoubleClick);
+            this.dgvVariables.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvVariables_KeyDown);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClear.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnClear.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.Location = new System.Drawing.Point(955, 735);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(112, 36);
+            this.btnClear.TabIndex = 3;
+            this.btnClear.Text = "Clea&r";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // ParameterVariables
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.btnSelect;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 486);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(1200, 785);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.dgvVariables);
             this.Controls.Add(this.btnSelect);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.chkIncludeInputVariables);
+            this.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ParameterVariables";
             this.Text = "ParameterVariables";
             ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).EndInit();
@@ -114,5 +141,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.DataGridView dgvVariables;
+        private System.Windows.Forms.Button btnClear;
     }
 }

@@ -9,6 +9,9 @@ using XCENT.JobServer.Abstract;
 
 namespace POC_Splitter
 {
+    public delegate void ControlMoveFocusHandler( Control control, MoveFocus action );
+
+
     public interface IValueEditor
     {
         /// <summary>
@@ -28,6 +31,11 @@ namespace POC_Splitter
         /// <summary>
         /// The implemented control can determine its required height and report it back to the consumer.
         /// </summary>
-        int PreferredHeight { get;  }
+        int PreferredHeight { get; }
+
+        void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler );
+
+        bool RequiresFocusRectangle { get; }
+
     }
 }

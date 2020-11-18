@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,7 +37,7 @@ namespace POC_Splitter {
                 }
             }
             else {
-                StepBase step = Program.job.FindStepBaseByNumber((long)editStep);
+                StepBase step = Program.job.FindStepByNumber(editStep);
                 module = (IModule)Program.modules.First( m => m.Id == step.ExecutionModuleId && m.Type == ModuleType.Executable );
                 parameters = step.Parameters;
             }
@@ -74,6 +76,10 @@ namespace POC_Splitter {
 
         private void btnStep3_Click( object sender, EventArgs e ) {
             SetStepToEdit( 3 );
+        }
+
+        private void btnShowParams_Click( object sender, EventArgs e ) {
+            MessageBox.Show( parameterContainer1.Parameters.ToJson() );
         }
     }
 }

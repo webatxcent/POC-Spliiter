@@ -12,12 +12,14 @@ using XCENT.Core.UI.WinForms;
 
 namespace POC_Splitter
 {
-    public partial class SingleChoiceEditor : ComboBoxEx, IValueEditor
+    public partial class SingleChoiceEditor : ComboBox, IValueEditor
     {
 
         public SingleChoiceEditor() : base() {
             InitializeComponent();
-            RequireMatch = true;
+            //RequireMatch = true;
+            AutoCompleteMode = AutoCompleteMode.None;
+            this.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         #region IValueEditor implementation
@@ -40,8 +42,6 @@ namespace POC_Splitter
             foreach ( string choice in parameterDef.Choices ) {
                 this.Items.Add(new { value = choice, display = choice } );
             }
-
-
         }
 
         public new int PreferredHeight {
@@ -50,6 +50,11 @@ namespace POC_Splitter
             }
         }
 
+        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
+            //nothing to do for this control.
+        }
+
+        public bool RequiresFocusRectangle => false;
 
         #endregion
     }

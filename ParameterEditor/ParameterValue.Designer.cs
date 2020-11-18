@@ -36,7 +36,7 @@
             this.btnClear.Location = new System.Drawing.Point(0, 1);
             this.btnClear.Margin = new System.Windows.Forms.Padding(0);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(26, 23);
+            this.btnClear.Size = new System.Drawing.Size(19, 23);
             this.btnClear.TabIndex = 2;
             this.btnClear.TabStop = false;
             this.btnClear.Text = "?";
@@ -45,6 +45,8 @@
             // lblVariable
             // 
             this.lblVariable.AutoEllipsis = true;
+            this.lblVariable.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVariable.Location = new System.Drawing.Point(80, 1);
             this.lblVariable.Margin = new System.Windows.Forms.Padding(0);
             this.lblVariable.Name = "lblVariable";
@@ -52,6 +54,7 @@
             this.lblVariable.TabIndex = 3;
             this.lblVariable.Text = "label1";
             this.lblVariable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblVariable.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lblVariable_MouseDown);
             // 
             // ParameterValue
             // 

@@ -14,10 +14,22 @@ namespace POC_Splitter
 {
     public partial class NumberEditor : NumberBox, IValueEditor
     {
+        ControlMoveFocusHandler _controlMoveFocusHandler;
+
 
         public NumberEditor() {
             InitializeComponent();
         }
+
+        protected override void OnKeyDown( KeyEventArgs e ) {
+            MoveFocus action = ParameterValue.EvaluateKey( e );
+
+            if ( action != MoveFocus.None )
+                _controlMoveFocusHandler( this, action );
+            else
+                base.OnKeyDown( e );
+        }
+
 
         #region IValueEditor implementation
 
@@ -42,8 +54,11 @@ namespace POC_Splitter
             else
                 base.Number = null;
             base.AllowBlanks = !parameterDef.IsRequired;
-            base.Min = (decimal)parameterDef.MinValue;
-            base.Max = (decimal)parameterDef.MaxValue;
+            //TODO: WEB fix this after the underlying parameterDef is fixed.
+            if ( parameterDef.MinValue != 0 && parameterDef.MaxValue != 0 ) {
+                base.Min = (decimal)parameterDef.MinValue;
+                base.Max = (decimal)parameterDef.MaxValue;
+            }
             base.Decimals = parameterDef.DecimalPlaces;
         }
 
@@ -52,6 +67,12 @@ namespace POC_Splitter
                 return PreferredSize.Height;
             }
         }
+
+        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
+            _controlMoveFocusHandler = controlMoveFocusHandler;
+        }
+
+        public bool RequiresFocusRectangle => false;
 
         #endregion
     }

@@ -34,7 +34,7 @@ namespace POC_Splitter
             btnHelp.ForeColor = Color.CornflowerBlue;
             btnHelp.Enabled = hasInfo;
 
-            btnFormula.Text = "\uf661";
+            btnFormula.Text = "\uf52c";//equal sign   "\uf661"; //f(x)
             btnFormula.Padding = new Padding( 0 );
             btnFormula.Click += OnFormulaClick;
             btnFormula.ForeColor = Color.CornflowerBlue;

@@ -61,7 +61,7 @@ namespace POC_Splitter
 
             job = jobServer.Jobs.FindById( 14 );
 
-            globals = jobServer.Parameters.ListAll();
+            globals = jobServer.Globals.ListAll();
             modules = jobServer.Executors.ListAll();
             modules.AddRange( jobServer.Triggers.ListAll() );
 

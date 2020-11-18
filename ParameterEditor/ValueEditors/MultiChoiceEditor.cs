@@ -34,6 +34,7 @@ namespace POC_Splitter
 
         public void Configure( ParameterDef parameterDef, string value ) {
 
+            value = value ?? "";
             var myData = parameterDef.Choices.Select( m => new MultiSelectDropDownItem { Display = m, Value = m, IsSelected = ( value.Contains( m ) ) } ).ToList();
             base.Items = myData;
 
@@ -45,6 +46,11 @@ namespace POC_Splitter
             }
         }
 
+        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
+            //nothing to do for this control.
+        }
+
+        public bool RequiresFocusRectangle => false;
 
         #endregion
     }

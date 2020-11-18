@@ -46,6 +46,12 @@ namespace POC_Splitter
             }
         }
 
+        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
+            //nothing to do for this control.
+        }
+
+        public bool RequiresFocusRectangle => false;
+
         #endregion
     }
 }

@@ -28,6 +28,7 @@
             this.btnStep1 = new System.Windows.Forms.Button();
             this.btnStep2 = new System.Windows.Forms.Button();
             this.btnStep3 = new System.Windows.Forms.Button();
+            this.btnShowParams = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // parameterContainer1
@@ -82,11 +83,22 @@
             this.btnStep3.UseVisualStyleBackColor = true;
             this.btnStep3.Click += new System.EventHandler(this.btnStep3_Click);
             // 
+            // btnShowParams
+            // 
+            this.btnShowParams.Location = new System.Drawing.Point(227, 12);
+            this.btnShowParams.Name = "btnShowParams";
+            this.btnShowParams.Size = new System.Drawing.Size(122, 32);
+            this.btnShowParams.TabIndex = 5;
+            this.btnShowParams.Text = "Show Params";
+            this.btnShowParams.UseVisualStyleBackColor = true;
+            this.btnShowParams.Click += new System.EventHandler(this.btnShowParams_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1195, 675);
+            this.Controls.Add(this.btnShowParams);
             this.Controls.Add(this.btnStep3);
             this.Controls.Add(this.btnStep2);
             this.Controls.Add(this.btnStep1);
@@ -107,6 +119,7 @@
         private System.Windows.Forms.Button btnStep1;
         private System.Windows.Forms.Button btnStep2;
         private System.Windows.Forms.Button btnStep3;
+        private System.Windows.Forms.Button btnShowParams;
     }
 }
 
