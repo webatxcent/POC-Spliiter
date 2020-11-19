@@ -10,10 +10,13 @@ using XCENT.JobServer.Abstract;
 namespace POC_Splitter
 {
     public delegate void ControlMoveFocusHandler( Control control, MoveFocus action );
-
+    
 
     public interface IValueEditor
     {
+        //provides access to parent functionalities.
+        IValueEditorContainer ValueEditorContainer { get; set; }
+
         /// <summary>
         /// provides access to the base control so that common interactions can be performed such as tying into keyboard handlers and such.
         /// </summary>
@@ -33,9 +36,9 @@ namespace POC_Splitter
         /// </summary>
         int PreferredHeight { get; }
 
-        void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler );
-
         bool RequiresFocusRectangle { get; }
+
+        bool WillHandleNavigation { get; }
 
     }
 }

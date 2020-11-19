@@ -21,17 +21,12 @@ namespace POC_Splitter
             InitializeComponent();
         }
 
-        protected override void OnKeyDown( KeyEventArgs e ) {
-            MoveFocus action = ParameterValue.EvaluateKey( e );
-
-            if ( action != MoveFocus.None )
-                _controlMoveFocusHandler( this, action );
-            else
-                base.OnKeyDown( e );
-        }
-
-
         #region IValueEditor implementation
+
+        public IValueEditorContainer ValueEditorContainer {
+            get;
+            set;
+        }
 
         public Control Control {
             get {
@@ -73,6 +68,8 @@ namespace POC_Splitter
         }
 
         public bool RequiresFocusRectangle => false;
+
+        public bool WillHandleNavigation => false;
 
         #endregion
     }

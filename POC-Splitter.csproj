@@ -80,6 +80,7 @@
     <Compile Include="ParameterEditor\ParameterVariables.Designer.cs">
       <DependentUpon>ParameterVariables.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParameterEditor\ValueEditors\IValueEditorContainer.cs" />
     <Compile Include="ParameterEditor\ValueEditors\SingleChoiceEditor.cs">
       <SubType>Component</SubType>
     </Compile>

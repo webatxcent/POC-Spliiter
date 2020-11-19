@@ -15,8 +15,6 @@ namespace POC_Splitter
     public partial class BoolEditor : CheckBox, IValueEditor
     {
 
-        ControlMoveFocusHandler _controlMoveFocusHandler;
-
         public BoolEditor(): base() {
             InitializeComponent();
             BackColor = SystemColors.Control;
@@ -24,27 +22,22 @@ namespace POC_Splitter
 
         }
 
-        protected override void OnPreviewKeyDown( PreviewKeyDownEventArgs e ) {
-            Debug.Print( "OnPreviewKeyDown" );
-            MoveFocus action = ParameterValue.EvaluateKey( new KeyEventArgs( e.KeyData ) );
-            if ( action != MoveFocus.None )
-                _controlMoveFocusHandler( this, action );
-
-            base.OnPreviewKeyDown( e );
+        protected override void OnEnter( EventArgs e ) {
+            base.OnEnter( e );
+            ValueEditorContainer.ChildHasFocus(true);
         }
 
-        protected override void OnKeyDown( KeyEventArgs e ) {
-            Debug.Print( "OnKeyDown" );
-            MoveFocus action = ParameterValue.EvaluateKey( e );
-
-            if ( action != MoveFocus.None )
-                _controlMoveFocusHandler( this, action );
-            else
-                base.OnKeyDown( e );
+        protected override void OnLeave( EventArgs e ) {
+            base.OnLeave( e );
+            ValueEditorContainer.ChildHasFocus( false );
         }
-
 
         #region IValueEditor implementation
+
+        public IValueEditorContainer ValueEditorContainer {
+            get;
+            set;
+        }
 
         public Control Control {
             get {
@@ -75,11 +68,9 @@ namespace POC_Splitter
             }
         }
 
-        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
-            _controlMoveFocusHandler = controlMoveFocusHandler;
-        }
-
         public bool RequiresFocusRectangle => true;
+
+        public bool WillHandleNavigation => true;
 
         #endregion
     }

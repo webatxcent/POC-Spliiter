@@ -45,7 +45,7 @@
             // lblVariable
             // 
             this.lblVariable.AutoEllipsis = true;
-            this.lblVariable.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblVariable.BackColor = System.Drawing.SystemColors.Control;
             this.lblVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVariable.Location = new System.Drawing.Point(80, 1);
             this.lblVariable.Margin = new System.Windows.Forms.Padding(0);

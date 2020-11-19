@@ -24,6 +24,11 @@ namespace POC_Splitter
 
         #region IValueEditor implementation
 
+        public IValueEditorContainer ValueEditorContainer {
+            get;
+            set;
+        }
+
         public Control Control {
             get {
                 return this as Control;
@@ -50,11 +55,9 @@ namespace POC_Splitter
             }
         }
 
-        public void SetMoveFocusHandler( ControlMoveFocusHandler controlMoveFocusHandler ) {
-            //nothing to do for this control.
-        }
-
         public bool RequiresFocusRectangle => false;
+
+        public bool WillHandleNavigation => false;
 
         #endregion
     }

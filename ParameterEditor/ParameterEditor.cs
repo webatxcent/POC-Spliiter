@@ -76,6 +76,9 @@ namespace POC_Splitter
 
 
             foreach ( ParameterDef def in parameterDefs ) {
+                if ( def.ModuleParameterDirection == ModuleParameterDirection.Out )
+                    continue;
+
                 Parameter param = parameters.Find( m => m.Name == def.Name );
 
                 ParameterValue parameterValue = new ParameterValue( def, param.Value, new ResolveVariable( Resolver ), 2 );
@@ -102,7 +105,6 @@ namespace POC_Splitter
                     return variable.Name;
             }
         }
-
 
         void AddParameter( ParameterLabel parameterLabel, ParameterValue parameterValue ) {
             parameterLabel.Tag = parameterValue;

@@ -17,14 +17,17 @@ namespace POC_Splitter
         public StringEditor() {
             InitializeComponent();
         }
-
-        #region IValueEditor implementation
-      
         protected override void OnEnter( EventArgs e ) {
             base.OnEnter( e );
             SelectAll();
         }
 
+        #region IValueEditor implementation
+
+        public IValueEditorContainer ValueEditorContainer {
+            get;
+            set;
+        }
 
         public Control Control {
             get {
@@ -51,6 +54,8 @@ namespace POC_Splitter
         }
 
         public bool RequiresFocusRectangle => false;
+
+        public bool WillHandleNavigation => false;
 
         #endregion
     }

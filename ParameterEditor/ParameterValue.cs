@@ -22,11 +22,14 @@ namespace POC_Splitter
         Last
     }
 
+    //delegate for event that will be raised to indicate that the focus needs to change to another parameter value.
     public delegate void MoveFocusHandler( ParameterValue source, MoveFocus moveFocus );
+    //delegate for event that will be raised to indicate that labels need to be adjusted; this is a hack because events indicating movement don't always work
     public delegate void SyncLabelsHandler();
+    //delegate for function that this class will use to resolve a variable reference for display purposes.
     public delegate string ResolveVariable( string variable );
 
-    public partial class ParameterValue : UserControl
+    public partial class ParameterValue : UserControl, IValueEditorContainer
     {
         public event MoveFocusHandler FocusChange;
         public event SyncLabelsHandler SyncLabels;
@@ -37,8 +40,19 @@ namespace POC_Splitter
         AppFonts _fonts;
         int _margin;
         bool _hasFocus;
+        bool _isVariableReference;
 
         public ParameterDef ParameterDef { get; internal set; }
+
+        public string Value {
+            get {
+                return _editor.Value;
+            }
+            set {
+                _editor.Configure( ParameterDef, value );
+                ConfigureControls( value );
+            }
+        }
 
         public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolveVariable, int margin ) {
             InitializeComponent();
@@ -58,11 +72,9 @@ namespace POC_Splitter
 
             //establish minimum height for the control which is based on the textbox. This can always be overridden when implementing PreferredHeight in the Value editors.
             _proxy = new TextBox();
-            _proxy.Location = new Point( -1000, -1000 ) ;
+            _proxy.Location = new Point( -1000, -1000 );
             _proxy.TabStop = false;
-            _proxy.Enter += _proxy_Enter;
-            _proxy.Leave += _proxy_Leave;
-            _proxy.KeyDown += _proxy_KeyDown;
+            _proxy.Visible = false;
             Controls.Add( _proxy );
 
 
@@ -87,54 +99,81 @@ namespace POC_Splitter
                 }
             }
             else if ( parameterDef.ModuleParameterType == ModuleParameterType.ListString ) {
+                //TODO write the list editor
                 _editor = new StringEditor();
             }
 
+            _editor.ValueEditorContainer = this;
             _editor.Control.Name = parameterDef.Name;
+            _editor.Control.KeyDown += OnValueEditorControlKeyDown;
             Controls.Add( _editor.Control );
-            _editor.Control.KeyDown += OnValueControlKeyDown;
-            _editor.SetMoveFocusHandler( MoveFocusHandler );
-
-
             Value = value;
         }
 
-        private void _proxy_KeyDown( object sender, KeyEventArgs e ) {
-            MoveFocus action = ParameterValue.EvaluateKey( e );
+        private void OnValueEditorControlKeyDown( object sender, KeyEventArgs e ) {
+            MoveFocus action =  ParameterValue.EvaluateKey( e );
 
             if ( action != MoveFocus.None ) {
                 e.Handled = true;
                 FocusChange?.Invoke( this, action );
             }
+
         }
 
-        /// <summary>
-        /// this is a special delegate that is called from editor implementations that may do something with the up and down keys such as the NumberBox which swallows those values
-        /// because the base TextBox will use them to navigate left and right.
-        /// </summary>
-        /// <param name="control"></param>
-        /// <param name="action"></param>
-        private void MoveFocusHandler( Control control, MoveFocus action ) {
-            FocusChange?.Invoke( this, action );
+        const int WM_KEYDOWN = 0x0100;
+        const int WM_KEYUP = 0x0101;
+
+        private bool ctrlKeyDown = false;
+
+        protected override bool ProcessCmdKey( ref Message msg, Keys keyData ) {
+            Debug.Print( $"ProcessCmdKey- Msg:{msg.Msg:X} LParam:{msg.LParam.ToInt64():X} WParam:{msg.WParam.ToInt32():X}" );
+
+            if ( msg.Msg == WM_KEYDOWN ) {
+                Debug.Print( "\tKey Down" );
+
+                if ( keyData == Keys.Control ) {
+                    Debug.Print( "\tCTRL pressed" );
+                    ctrlKeyDown = true;
+                    return base.ProcessCmdKey( ref msg, keyData );
+                }
+                if ( keyData == Keys.Up ) {
+                    Debug.Print( "\t\tMoving Previous" );
+                    FocusChange?.Invoke( this, MoveFocus.Previous );
+                    return true;
+                }
+                if ( keyData == Keys.Down ) {
+                    Debug.Print( "\t\tMoving Next" );
+                    FocusChange?.Invoke( this, MoveFocus.Next );
+                    return true;
+                }
+                if ( keyData == Keys.Home && ctrlKeyDown ) {
+                    Debug.Print( "\t\tMoving First" );
+                    FocusChange?.Invoke( this, MoveFocus.First );
+                    return true;
+                }
+                if ( keyData == Keys.End && ctrlKeyDown ) {
+                    Debug.Print( "\t\tMoving last" );
+                    FocusChange?.Invoke( this, MoveFocus.Last );
+                    return true;
+                }
+            }
+
+            if ( msg.Msg == WM_KEYUP ) {
+                Debug.Print( "\tKey Up" );
+                if ( keyData == Keys.Control ) {
+                    Debug.Print( "\t\tCTRL released" );
+                    ctrlKeyDown = false;
+                    return base.ProcessCmdKey( ref msg, keyData );
+                }
+            }
+
+            return base.ProcessCmdKey( ref msg, keyData );
         }
 
-        //DEBUG PURPOSES - can be removed
-        private void _proxy_Leave( object sender, EventArgs e ) {
-            _hasFocus = false;
-            Debug.Print( "left _proxy." );
-            Invalidate();
-        }
-
-        //DEBUG PURPOSES - can be removed
-        private void _proxy_Enter( object sender, EventArgs e ) {
-            _hasFocus = true;
-            Debug.Print( "entered _proxy." );
-            Invalidate();
-        }
-
+        //draws focus rectangle if needed for currently hosted editor control.
         protected override void OnPaint( PaintEventArgs e ) {
             base.OnPaint( e );
-            if ( _hasFocus || _editor.RequiresFocusRectangle  )
+            if ( _hasFocus && ( _editor.RequiresFocusRectangle || _isVariableReference ) )
                 ControlPaint.DrawFocusRectangle( e.Graphics, this.ClientRectangle, SystemColors.ActiveBorder, SystemColors.Control );
         }
 
@@ -163,40 +202,30 @@ namespace POC_Splitter
         }
 
         void ConfigureControls( string value = null ) {
-            bool isVariableRef;
 
             if ( value == null )
-                isVariableRef = false;
+                _isVariableReference = false;
             else
-                isVariableRef = value.StartsWith( "{" ) && value.EndsWith( "}" );
+                _isVariableReference = value.StartsWith( "{" ) && value.EndsWith( "}" );
 
-            _editor.Control.Visible = !isVariableRef;
-            lblVariable.Visible = isVariableRef;
-            btnClear.Visible = isVariableRef;
+            _editor.Control.Visible = !_isVariableReference;
+            lblVariable.Visible = _isVariableReference;
+            btnClear.Visible = _isVariableReference;
 
-            if ( isVariableRef )
+            if ( _isVariableReference )
                 lblVariable.Text = _resolveVariable( value );
         }
 
 
-        /// <summary>
-        /// This event handler is needed to compensate for a problem in the parent container control where small scrollbar movements,
-        /// and control repositions as the result of tabbing/focus do not trigger a scroll event. The consumer uses this event as a 
-        /// signal to execute code to realign the label panel with the value panel
-        /// </summary>
-        /// <param name="e"></param>
+        
+        /*
+            This event handler is needed to compensate for a problem in the parent container control where small scrollbar movements,
+            and control repositions as the result of tabbing/focus do not trigger a scroll event. The consumer uses this event as a 
+            signal to execute code to realign the label panel with the value panel
+        */
         protected override void OnMove( EventArgs e ) {
             base.OnMove( e );
             SyncLabels?.Invoke();
-        }
-
-        private void OnValueControlKeyDown( object sender, KeyEventArgs e ) {
-            MoveFocus action = ParameterValue.EvaluateKey( e );
-
-            if ( action != MoveFocus.None ) {
-                e.Handled = true;
-                FocusChange?.Invoke( this, action );
-            }
         }
 
         protected override void OnResize( EventArgs e ) {
@@ -223,27 +252,19 @@ namespace POC_Splitter
                 _editor.Control.Location = rc.Location;
             }
 
+            btnClear.Top = 1;
+            btnClear.Left = Width - _proxy.PreferredHeight;
+            btnClear.Height = _proxy.PreferredHeight - 2;
+            btnClear.Width = _proxy.PreferredHeight - 2;
+
             lblVariable.Top = ( Height - lblVariable.PreferredHeight ) / 2;
             lblVariable.Left = 1;
             lblVariable.Height = lblVariable.PreferredHeight;
-            lblVariable.Width = Width - ( _proxy.PreferredHeight - 2 )- _margin;
-            lblVariable.MaximumSize = new Size( Width - _proxy.PreferredHeight - _margin, lblVariable.Height );
+            lblVariable.Width = btnClear.Left - 1;
 
-            btnClear.Top = 1;
-            btnClear.Left = lblVariable.Left + lblVariable.Width + _margin;
-            btnClear.Height = _proxy.PreferredHeight - 2 ;
-            btnClear.Width = _proxy.PreferredHeight - 2;
         }
 
-        public string Value {
-            get {
-                return _editor.Value;
-            }
-            set {
-                _editor.Configure( ParameterDef, value );
-                ConfigureControls( value );
-            }
-        }
+
 
         private void lblVariable_MouseDown( object sender, MouseEventArgs e ) {
             _proxy.Focus();
@@ -267,5 +288,17 @@ namespace POC_Splitter
 
             return action;
         }
+
+        #region
+        public void ChildHasFocus( bool hasFocus ) {
+            _hasFocus = hasFocus;
+            Invalidate();
+        }
+
+        public void ChangeFocus( MoveFocus moveFocus ) {
+            FocusChange?.Invoke( this, moveFocus );
+        }
+
+        #endregion
     }
 }
