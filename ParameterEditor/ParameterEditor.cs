@@ -110,9 +110,6 @@ namespace POC_Splitter
             LayoutControls();
             ResumeLayout();
 
-            if ( splitContainer.Panel2.Controls.Count > 0 )
-                splitContainer.Panel2.Controls[ 0 ].Focus();
-
         }
 
         string Resolver( string variableName ) {
