@@ -47,7 +47,14 @@ namespace POC_Splitter
         }
 
         public string Value {
-            get { return Text; }
+            get {
+                if ( CheckState == CheckState.Checked )
+                    return "true";
+                else if ( CheckState == CheckState.Unchecked )
+                    return "false";
+                else 
+                    return null;
+            }
         }
 
         public void Configure( ParameterDef parameterDef, string value ) {

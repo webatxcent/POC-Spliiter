@@ -21,7 +21,7 @@ namespace POC_Splitter {
 
         protected override void OnLoad( EventArgs e ) {
             base.OnLoad( e );
-            SetStepToEdit( 0 );
+            SetStepToEdit( 1 );
         }
 
         void SetStepToEdit( int editStep ) {
