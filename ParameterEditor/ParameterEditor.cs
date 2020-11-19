@@ -50,6 +50,24 @@ namespace POC_Splitter
             }
         }
 
+        public bool IsValid {
+            get {
+                Parameters parameters = this.Parameters;
+
+                foreach( ParameterDef def in _parameterDefs ) {
+                    if ( !def.IsRequired )
+                        continue;
+
+                    Parameter parameter = parameters.Find( m=>m.Name == def.Name);
+                    if ( parameter == null )
+                        return false;
+                    if ( String.IsNullOrEmpty(parameter.Value) )
+                        return false;
+                }
+                return true;
+            }
+        }
+
 
         public ParameterEditor() {
             InitializeComponent();

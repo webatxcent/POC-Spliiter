@@ -85,5 +85,9 @@ namespace POC_Splitter {
             MessageBox.Show( parameterContainer1.Parameters.ToJson() );
         }
 
+        private void btnIsValid_Click( object sender, EventArgs e ) {
+            string valid = parameterContainer1.IsValid ? "Valid" : "Invalid";
+            MessageBox.Show( $"Data is {valid }" );
+        }
     }
 }
