@@ -14,6 +14,8 @@ namespace POC_Splitter
 {
     public partial class SingleChoiceEditor : ComboBox, IValueEditor
     {
+        bool _suppressUpDownHandling = false;
+
 
         public SingleChoiceEditor() : base() {
             InitializeComponent();
@@ -34,6 +36,16 @@ namespace POC_Splitter
                 return this as Control;
             }
 
+        }
+
+        protected override void OnDropDown( EventArgs e ) {
+            base.OnDropDown( e );
+            _suppressUpDownHandling = true;
+
+        }
+        protected override void OnDropDownClosed( EventArgs e ) {
+            base.OnDropDownClosed( e );
+            _suppressUpDownHandling = false;
         }
 
         public string Value {
@@ -57,8 +69,7 @@ namespace POC_Splitter
 
         public bool RequiresFocusRectangle => false;
 
-        public bool WillHandleNavigation => false;
-
+        public bool SuppressUpDownHandling => _suppressUpDownHandling;
         #endregion
     }
 }

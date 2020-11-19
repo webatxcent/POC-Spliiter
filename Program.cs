@@ -65,6 +65,7 @@ namespace POC_Splitter
             modules = jobServer.Executors.ListAll();
             modules.AddRange( jobServer.Triggers.ListAll() );
 
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new Form1() );

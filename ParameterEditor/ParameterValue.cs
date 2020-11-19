@@ -33,10 +33,11 @@ namespace POC_Splitter
     {
         public event MoveFocusHandler FocusChange;
         public event SyncLabelsHandler SyncLabels;
+        public event SetFormulaHandler SetFormula;
 
         IValueEditor _editor;
         TextBox _proxy; //stand-in for ideal height of the control
-        ResolveVariable _resolveVariable;
+        ResolveVariable _resolver;
         AppFonts _fonts;
         int _margin;
         bool _hasFocus;
@@ -54,17 +55,15 @@ namespace POC_Splitter
             }
         }
 
-        public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolveVariable, int margin ) {
+        public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolver, int margin ) {
             InitializeComponent();
 
-            _resolveVariable = resolveVariable;
+            _resolver = resolver;
             _margin = margin;
 
             btnClear.Text = "\uf057";
             btnClear.Click += OnClearClick;
             btnClear.ForeColor = Color.Red;
-
-            this.BackColor = SystemColors.Control;
 
             ParameterDef = parameterDef;
             //this is used for locating controls.
@@ -72,7 +71,6 @@ namespace POC_Splitter
 
             //establish minimum height for the control which is based on the textbox. This can always be overridden when implementing PreferredHeight in the Value editors.
             _proxy = new TextBox();
-            _proxy.Location = new Point( -1000, -1000 );
             _proxy.TabStop = false;
             _proxy.Visible = false;
             Controls.Add( _proxy );
@@ -108,62 +106,98 @@ namespace POC_Splitter
             _editor.Control.KeyDown += OnValueEditorControlKeyDown;
             Controls.Add( _editor.Control );
             Value = value;
+
+
+            lblVariable.MouseDown += lblVariable_MouseDown;
+            GotFocus += ParameterValue_GotFocus;
+            LostFocus += ParameterValue_LostFocus;
+            KeyDown += ParameterValue_KeyDown;
+        }
+
+        private void ParameterValue_KeyDown( object sender, KeyEventArgs e ) {
+            if ( !_isVariableReference )
+                return;
+
+            Debug.Print( $"{e.KeyCode}" );
+
+            if ( e.KeyCode == Keys.Delete && e.Modifiers == 0 ) {
+                ClearVariableAssignment();
+                _editor.Control.Focus();
+                e.Handled = true;
+            }
+
+            if ( e.KeyCode == Keys.Oemplus && e.Modifiers == Keys.Control ) {
+                SetFormula?.Invoke( this, Name );
+                e.Handled = true;
+            }
+
+            MoveFocus action = EvaluateKey( e );
+            if ( action != MoveFocus.None )
+                FocusChange?.Invoke( this, action );
+        }
+
+        private void lblVariable_MouseDown( object sender, MouseEventArgs e ) {
+            this.Focus();
+        }
+
+        private void ParameterValue_GotFocus( object sender, EventArgs e ) {
+            if ( _isVariableReference ) {
+                _hasFocus = true;
+                Invalidate();
+            }
+        }
+
+        private void ParameterValue_LostFocus( object sender, EventArgs e ) {
+            if ( _isVariableReference ) {
+                _hasFocus = false;
+                Invalidate();
+            }
         }
 
         private void OnValueEditorControlKeyDown( object sender, KeyEventArgs e ) {
+
+            if ( e.KeyCode == Keys.Oemplus && e.Modifiers == Keys.Control ) {
+                SetFormula?.Invoke( this, Name );
+                if ( _isVariableReference )
+                    this.Focus();
+                else
+                    _editor.Control.Focus();
+                e.Handled = true;
+                return;
+            }
+
             MoveFocus action =  ParameterValue.EvaluateKey( e );
+
+            if ( ( action == MoveFocus.Previous || action == MoveFocus.Next ) && _editor.SuppressUpDownHandling )
+                return;
 
             if ( action != MoveFocus.None ) {
                 e.Handled = true;
                 FocusChange?.Invoke( this, action );
             }
-
         }
 
-        const int WM_KEYDOWN = 0x0100;
-        const int WM_KEYUP = 0x0101;
-
-        private bool ctrlKeyDown = false;
-
+        //this code is needed to handle the bizarre way that the CheckBox control handles the keyboard.
+        //I was not able to find another way to allow the user to use the up/down arrows to successfully navigate thru checkboxes.
         protected override bool ProcessCmdKey( ref Message msg, Keys keyData ) {
-            Debug.Print( $"ProcessCmdKey- Msg:{msg.Msg:X} LParam:{msg.LParam.ToInt64():X} WParam:{msg.WParam.ToInt32():X}" );
 
-            if ( msg.Msg == WM_KEYDOWN ) {
-                Debug.Print( "\tKey Down" );
+            const int WM_KEYDOWN = 0x0100;
+            //Debug.Print( $"ProcessCmdKey- Msg:{msg.Msg:X} LParam:{msg.LParam.ToInt64():X} WParam:{msg.WParam.ToInt32():X}" );
 
-                if ( keyData == Keys.Control ) {
-                    Debug.Print( "\tCTRL pressed" );
-                    ctrlKeyDown = true;
-                    return base.ProcessCmdKey( ref msg, keyData );
-                }
-                if ( keyData == Keys.Up ) {
-                    Debug.Print( "\t\tMoving Previous" );
-                    FocusChange?.Invoke( this, MoveFocus.Previous );
-                    return true;
-                }
-                if ( keyData == Keys.Down ) {
-                    Debug.Print( "\t\tMoving Next" );
-                    FocusChange?.Invoke( this, MoveFocus.Next );
-                    return true;
-                }
-                if ( keyData == Keys.Home && ctrlKeyDown ) {
-                    Debug.Print( "\t\tMoving First" );
-                    FocusChange?.Invoke( this, MoveFocus.First );
-                    return true;
-                }
-                if ( keyData == Keys.End && ctrlKeyDown ) {
-                    Debug.Print( "\t\tMoving last" );
-                    FocusChange?.Invoke( this, MoveFocus.Last );
-                    return true;
-                }
-            }
+            if ( !_editor.SuppressUpDownHandling ) {
+                if ( msg.Msg == WM_KEYDOWN ) {
+                    //Debug.Print( "\tKey Down" );
 
-            if ( msg.Msg == WM_KEYUP ) {
-                Debug.Print( "\tKey Up" );
-                if ( keyData == Keys.Control ) {
-                    Debug.Print( "\t\tCTRL released" );
-                    ctrlKeyDown = false;
-                    return base.ProcessCmdKey( ref msg, keyData );
+                    if ( keyData == Keys.Up ) {
+                        //Debug.Print( "\t\tMoving Previous" );
+                        FocusChange?.Invoke( this, MoveFocus.Previous );
+                        return true;
+                    }
+                    if ( keyData == Keys.Down ) {
+                        //Debug.Print( "\t\tMoving Next" );
+                        FocusChange?.Invoke( this, MoveFocus.Next );
+                        return true;
+                    }
                 }
             }
 
@@ -197,6 +231,10 @@ namespace POC_Splitter
         }
 
         private void OnClearClick( object sender, EventArgs e ) {
+            ClearVariableAssignment();
+        }
+
+        private void ClearVariableAssignment() {
             _editor.Control.Text = "";
             ConfigureControls();
         }
@@ -213,11 +251,9 @@ namespace POC_Splitter
             btnClear.Visible = _isVariableReference;
 
             if ( _isVariableReference )
-                lblVariable.Text = _resolveVariable( value );
+                lblVariable.Text = _resolver( value );
         }
 
-
-        
         /*
             This event handler is needed to compensate for a problem in the parent container control where small scrollbar movements,
             and control repositions as the result of tabbing/focus do not trigger a scroll event. The consumer uses this event as a 
@@ -262,12 +298,6 @@ namespace POC_Splitter
             lblVariable.Height = lblVariable.PreferredHeight;
             lblVariable.Width = btnClear.Left - 1;
 
-        }
-
-
-
-        private void lblVariable_MouseDown( object sender, MouseEventArgs e ) {
-            _proxy.Focus();
         }
 
         internal static MoveFocus EvaluateKey( KeyEventArgs e ) {

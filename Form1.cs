@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -56,7 +56,10 @@ namespace POC_Splitter {
 
 
             parameterContainer1.LoadParameterData( module.ParameterDefs, parameters, variables, Program.globals );
-            parameterContainer1.Focus();
+            if ( parameterContainer1.PreferredHeight > parameterContainer1.Height ) {
+                var adjust = parameterContainer1.PreferredHeight - parameterContainer1.Height;
+                Height = this.Height + adjust;
+            }
 
         }
 
@@ -81,5 +84,6 @@ namespace POC_Splitter {
         private void btnShowParams_Click( object sender, EventArgs e ) {
             MessageBox.Show( parameterContainer1.Parameters.ToJson() );
         }
+
     }
 }

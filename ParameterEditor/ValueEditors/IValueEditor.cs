@@ -38,7 +38,6 @@ namespace POC_Splitter
 
         bool RequiresFocusRectangle { get; }
 
-        bool WillHandleNavigation { get; }
-
+        bool SuppressUpDownHandling { get; }
     }
 }

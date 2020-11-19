@@ -70,7 +70,7 @@ namespace POC_Splitter
 
         public bool RequiresFocusRectangle => true;
 
-        public bool WillHandleNavigation => true;
+        public bool SuppressUpDownHandling => false;
 
         #endregion
     }

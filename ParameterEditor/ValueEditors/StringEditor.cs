@@ -55,8 +55,7 @@ namespace POC_Splitter
 
         public bool RequiresFocusRectangle => false;
 
-        public bool WillHandleNavigation => false;
-
+        public bool SuppressUpDownHandling => false;
         #endregion
     }
 }

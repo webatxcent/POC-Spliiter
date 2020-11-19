@@ -32,13 +32,34 @@ namespace POC_Splitter
                 }
 
                 return parameters;
+            }
+        }
 
+        public int PreferredHeight {
+            get {
+                var controls = splitContainer.Panel2.Controls;
+
+
+                if ( controls.Count > 0 ) {
+                    Control firstControl = controls[0];
+                    Control lastControl = controls[controls.Count - 1];
+                    return ( lastControl.Top + lastControl.Height ) - firstControl.Top + _margin;
+                }
+                else
+                    return splitContainer.Panel2.Height;
             }
         }
 
 
         public ParameterEditor() {
             InitializeComponent();
+            splitContainer.GotFocus += SplitContainer_GotFocus;
+
+        }
+
+        private void SplitContainer_GotFocus( object sender, EventArgs e ) {
+            if ( splitContainer.Panel2.Controls.Count > 0 )
+                splitContainer.Panel2.Controls[ 0 ].Focus();
         }
 
         public void LoadParameterData( List<ParameterDef> parameterDefs, Parameters parameters, List<Variable> variables, List<GlobalDtoForView> globals ) {
@@ -88,6 +109,10 @@ namespace POC_Splitter
             }
             LayoutControls();
             ResumeLayout();
+
+            if ( splitContainer.Panel2.Controls.Count > 0 )
+                splitContainer.Panel2.Controls[ 0 ].Focus();
+
         }
 
         string Resolver( string variableName ) {
@@ -117,6 +142,7 @@ namespace POC_Splitter
             splitContainer.Panel2.Controls.Add( parameterValue );
             parameterValue.FocusChange += OnFocusChange;
             parameterValue.SyncLabels += OnSyncLabels;
+            parameterValue.SetFormula += OnSetFormula;
         }
 
         protected override void DestroyHandle() {
@@ -192,7 +218,7 @@ namespace POC_Splitter
             splitContainer.MouseUp += splitContainer_MouseUp;
 
             //this sets the initial splitter position, this should probably be externalized and saved off so that it is persisted as user preferences.
-            splitContainer.SplitterDistance = Width / 3;
+            splitContainer.SplitterDistance = (int)(Width * 0.4);
             splitContainer.SplitterWidth = _margin;
 
             //these events setup reposition and resize activities as a result of scrolling and movement of the splitter bar.
@@ -443,9 +469,7 @@ namespace POC_Splitter
         }
 
         private void OnSetFormula( ParameterValue valueControl, string name ) {
-
             ParameterVariables dialog = new ParameterVariables( valueControl.ParameterDef.Caption, valueControl.Value, _globals, _variables );
-
             DialogResult result = dialog.ShowDialog();
 
             if ( result == DialogResult.OK ) {

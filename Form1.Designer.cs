@@ -23,13 +23,63 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.parameterContainer1 = new POC_Splitter.ParameterEditor();
             this.btnTrigger = new System.Windows.Forms.Button();
             this.btnStep1 = new System.Windows.Forms.Button();
             this.btnStep2 = new System.Windows.Forms.Button();
             this.btnStep3 = new System.Windows.Forms.Button();
             this.btnShowParams = new System.Windows.Forms.Button();
+            this.parameterContainer1 = new POC_Splitter.ParameterEditor();
             this.SuspendLayout();
+            // 
+            // btnTrigger
+            // 
+            this.btnTrigger.Location = new System.Drawing.Point(13, 12);
+            this.btnTrigger.Name = "btnTrigger";
+            this.btnTrigger.Size = new System.Drawing.Size(75, 32);
+            this.btnTrigger.TabIndex = 0;
+            this.btnTrigger.Text = "Trigger";
+            this.btnTrigger.UseVisualStyleBackColor = true;
+            this.btnTrigger.Click += new System.EventHandler(this.btnTrigger_Click);
+            // 
+            // btnStep1
+            // 
+            this.btnStep1.Location = new System.Drawing.Point(94, 12);
+            this.btnStep1.Name = "btnStep1";
+            this.btnStep1.Size = new System.Drawing.Size(32, 32);
+            this.btnStep1.TabIndex = 1;
+            this.btnStep1.Text = "1";
+            this.btnStep1.UseVisualStyleBackColor = true;
+            this.btnStep1.Click += new System.EventHandler(this.btnStep1_Click);
+            // 
+            // btnStep2
+            // 
+            this.btnStep2.Location = new System.Drawing.Point(132, 13);
+            this.btnStep2.Name = "btnStep2";
+            this.btnStep2.Size = new System.Drawing.Size(32, 32);
+            this.btnStep2.TabIndex = 2;
+            this.btnStep2.Text = "2";
+            this.btnStep2.UseVisualStyleBackColor = true;
+            this.btnStep2.Click += new System.EventHandler(this.btnStep2_Click);
+            // 
+            // btnStep3
+            // 
+            this.btnStep3.Location = new System.Drawing.Point(170, 13);
+            this.btnStep3.Name = "btnStep3";
+            this.btnStep3.Size = new System.Drawing.Size(32, 32);
+            this.btnStep3.TabIndex = 3;
+            this.btnStep3.Text = "3";
+            this.btnStep3.UseVisualStyleBackColor = true;
+            this.btnStep3.Click += new System.EventHandler(this.btnStep3_Click);
+            // 
+            // btnShowParams
+            // 
+            this.btnShowParams.Location = new System.Drawing.Point(271, 13);
+            this.btnShowParams.Name = "btnShowParams";
+            this.btnShowParams.Size = new System.Drawing.Size(122, 32);
+            this.btnShowParams.TabIndex = 4;
+            this.btnShowParams.Text = "Show Params";
+            this.btnShowParams.UseVisualStyleBackColor = true;
+            this.btnShowParams.Click += new System.EventHandler(this.btnShowParams_Click);
             // 
             // parameterContainer1
             // 
@@ -41,57 +91,7 @@
             this.parameterContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.parameterContainer1.Name = "parameterContainer1";
             this.parameterContainer1.Size = new System.Drawing.Size(1169, 608);
-            this.parameterContainer1.TabIndex = 0;
-            // 
-            // btnTrigger
-            // 
-            this.btnTrigger.Location = new System.Drawing.Point(13, 12);
-            this.btnTrigger.Name = "btnTrigger";
-            this.btnTrigger.Size = new System.Drawing.Size(75, 32);
-            this.btnTrigger.TabIndex = 1;
-            this.btnTrigger.Text = "Trigger";
-            this.btnTrigger.UseVisualStyleBackColor = true;
-            this.btnTrigger.Click += new System.EventHandler(this.btnTrigger_Click);
-            // 
-            // btnStep1
-            // 
-            this.btnStep1.Location = new System.Drawing.Point(94, 12);
-            this.btnStep1.Name = "btnStep1";
-            this.btnStep1.Size = new System.Drawing.Size(32, 32);
-            this.btnStep1.TabIndex = 2;
-            this.btnStep1.Text = "1";
-            this.btnStep1.UseVisualStyleBackColor = true;
-            this.btnStep1.Click += new System.EventHandler(this.btnStep1_Click);
-            // 
-            // btnStep2
-            // 
-            this.btnStep2.Location = new System.Drawing.Point(132, 13);
-            this.btnStep2.Name = "btnStep2";
-            this.btnStep2.Size = new System.Drawing.Size(32, 32);
-            this.btnStep2.TabIndex = 3;
-            this.btnStep2.Text = "2";
-            this.btnStep2.UseVisualStyleBackColor = true;
-            this.btnStep2.Click += new System.EventHandler(this.btnStep2_Click);
-            // 
-            // btnStep3
-            // 
-            this.btnStep3.Location = new System.Drawing.Point(170, 12);
-            this.btnStep3.Name = "btnStep3";
-            this.btnStep3.Size = new System.Drawing.Size(32, 32);
-            this.btnStep3.TabIndex = 4;
-            this.btnStep3.Text = "3";
-            this.btnStep3.UseVisualStyleBackColor = true;
-            this.btnStep3.Click += new System.EventHandler(this.btnStep3_Click);
-            // 
-            // btnShowParams
-            // 
-            this.btnShowParams.Location = new System.Drawing.Point(227, 12);
-            this.btnShowParams.Name = "btnShowParams";
-            this.btnShowParams.Size = new System.Drawing.Size(122, 32);
-            this.btnShowParams.TabIndex = 5;
-            this.btnShowParams.Text = "Show Params";
-            this.btnShowParams.UseVisualStyleBackColor = true;
-            this.btnShowParams.Click += new System.EventHandler(this.btnShowParams_Click);
+            this.parameterContainer1.TabIndex = 5;
             // 
             // Form1
             // 
