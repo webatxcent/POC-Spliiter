@@ -57,8 +57,9 @@ namespace POC_Splitter
             this.DisplayMember = "display";
             this.ValueMember = "value";
             foreach ( string choice in parameterDef.Choices ) {
-                this.Items.Add( new { value = choice, display = choice } );
+                this.Items.Add(new { value = choice, display = choice } );
             }
+
             this.SelectedIndex = this.FindStringExact( value );
         }
 

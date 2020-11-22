@@ -52,7 +52,7 @@ namespace POC_Splitter
                     return "true";
                 else if ( CheckState == CheckState.Unchecked )
                     return "false";
-                else 
+                else
                     return null;
             }
         }

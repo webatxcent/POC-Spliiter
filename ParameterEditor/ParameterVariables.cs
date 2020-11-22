@@ -47,9 +47,9 @@ namespace POC_Splitter
 
                 //TODO: WEB-these should be generated as part of the global or variable class.
                 if ( isGlobal )
-                    Reference = $"{{::{name}}}";
+                    Reference = $"{{{{::{name}}}}}";
                 else
-                    Reference = $"{{{name}}}";
+                    Reference = $"{{{{{name}}}}}";
 
             }
         }
@@ -161,12 +161,12 @@ namespace POC_Splitter
     static class VariablesExtension
     {
         static public string Reference( this Variable variable ) {
-            return $"{{{variable.Name}}}";
+            return $"{{{{{variable.Name}}}}}";
         }
 
 
         static public string Reference( this IGlobal global ) {
-            return $"{{::{global.Symbol}}}";
+            return $"{{{{::{global.Symbol}}}}}";
         }
 
     }

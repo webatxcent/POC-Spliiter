@@ -54,20 +54,19 @@ namespace POC_Splitter
             get {
                 Parameters parameters = this.Parameters;
 
-                foreach( ParameterDef def in _parameterDefs ) {
+                foreach ( ParameterDef def in _parameterDefs ) {
                     if ( !def.IsRequired )
                         continue;
 
                     Parameter parameter = parameters.Find( m=>m.Name == def.Name);
                     if ( parameter == null )
                         return false;
-                    if ( String.IsNullOrEmpty(parameter.Value) )
+                    if ( String.IsNullOrEmpty( parameter.Value ) )
                         return false;
                 }
                 return true;
             }
         }
-
 
         public ParameterEditor() {
             InitializeComponent();
@@ -127,17 +126,16 @@ namespace POC_Splitter
             }
             LayoutControls();
             ResumeLayout();
-
         }
 
         string Resolver( string variableName ) {
-            if ( variableName.StartsWith( "{::" ) ) {
-                var name = variableName.Replace("{::", "").Replace("}", "");
+            if ( variableName.StartsWith( "{{::" ) ) {
+                var name = variableName.Replace("{{::", "").Replace("}}", "");
                 var global = _globals.Find( m => m.Symbol == name );
                 return global.Value;
             }
             else {
-                var name = variableName.Replace( "{", "").Replace("}", "");
+                var name = variableName.Replace( "{{", "").Replace("}}", "");
                 var variable = _variables.Find( m=>m.Name == name);
                 if ( variable == null )
                     return "<undefined>";

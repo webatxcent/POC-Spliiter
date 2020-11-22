@@ -244,7 +244,7 @@ namespace POC_Splitter
             if ( value == null )
                 _isVariableReference = false;
             else
-                _isVariableReference = value.StartsWith( "{" ) && value.EndsWith( "}" );
+                _isVariableReference = value.StartsWith( "{{" ) && value.EndsWith( "}}" );
 
             _editor.Control.Visible = !_isVariableReference;
             lblVariable.Visible = _isVariableReference;

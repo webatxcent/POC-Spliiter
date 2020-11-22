@@ -49,12 +49,9 @@ namespace POC_Splitter
             else
                 base.Number = null;
             base.AllowBlanks = !parameterDef.IsRequired;
-            //TODO: WEB fix this after the underlying parameterDef is fixed.
-            if ( parameterDef.MinValue != 0 && parameterDef.MaxValue != 0 ) {
-                base.Min = (decimal)parameterDef.MinValue;
-                base.Max = (decimal)parameterDef.MaxValue;
-            }
-            base.Decimals = parameterDef.DecimalPlaces;
+            base.Min = parameterDef.MinValue.HasValue ? (decimal)parameterDef.MinValue.Value : decimal.MinValue;
+            base.Max = parameterDef.MaxValue.HasValue ? (decimal)parameterDef.MaxValue.Value : decimal.MaxValue;
+            base.Decimals = parameterDef.DecimalPlaces ?? 0;
         }
 
         public new int PreferredHeight {
