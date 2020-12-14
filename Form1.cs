@@ -87,7 +87,8 @@ namespace POC_Splitter {
 
         private void btnIsValid_Click( object sender, EventArgs e ) {
             string valid = parameterContainer1.IsValid ? "Valid" : "Invalid";
-            MessageBox.Show( $"Data is {valid }" );
+            string changed = parameterContainer1.HasChanged ? "were" : "were not";
+            MessageBox.Show( $"Data is {valid }. Changes {changed} made." );
         }
     }
 }

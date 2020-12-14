@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AppFonts.cs" />
     <Compile Include="Credentials.cs" />
+    <Compile Include="FontAwesome.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

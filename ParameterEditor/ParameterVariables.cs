@@ -27,19 +27,19 @@ namespace POC_Splitter
 
             public GridRow( bool isGlobal, ModuleParameterDirection? direction, string name, string value, string description ) {
 
-                if ( isGlobal )
-                    Global = "\uf0ac"; //global
+                if (isGlobal)
+                    Global = FontAwesome.Globe;
                 else
-                    Global = "\uf52c"; //equal sign
+                    Global = FontAwesome.Equals;
 
-                if ( direction == null )
+                if (direction == null)
                     Direction = "";
-                else if ( direction.Value == ModuleParameterDirection.In )
-                    Direction = "\uf309";
-                else if ( direction.Value == ModuleParameterDirection.Out )
-                    Direction = "\uf30c";
-                else if ( direction.Value == ModuleParameterDirection.InOut )
-                    Direction = "\uf883"; 
+                else if (direction.Value == ModuleParameterDirection.In)
+                    Direction = FontAwesome.LongArrowAltDown;
+                else if (direction.Value == ModuleParameterDirection.Out)
+                    Direction = FontAwesome.LongArrowAltUp;
+                else if (direction.Value == ModuleParameterDirection.InOut)
+                    Direction = FontAwesome.SortAlt;
 
                 Name = name;
                 Value = value;

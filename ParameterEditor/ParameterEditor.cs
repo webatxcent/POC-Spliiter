@@ -68,6 +68,24 @@ namespace POC_Splitter
             }
         }
 
+        public bool HasChanged {
+            get {
+                foreach ( Control c in this.splitContainer.Panel2.Controls ) {
+                    ParameterValue parameterValue = c as ParameterValue;
+                    var originalParameterValue = _parameters.Find( m=>m.Name == parameterValue.Name );
+
+                    //if there is no original parameter value for this particular named parameter, then there is definitely a change.
+                    if ( originalParameterValue == null )
+                        return true;
+
+                    //if the original parameter value does not match the current parameter value in the editor, then there is a change.
+                    if ( parameterValue.Value != originalParameterValue.Value )
+                        return true;
+                }
+                return false;
+            }
+        }
+
         public ParameterEditor() {
             InitializeComponent();
             splitContainer.GotFocus += SplitContainer_GotFocus;
@@ -132,7 +150,10 @@ namespace POC_Splitter
             if ( variableName.StartsWith( "{{::" ) ) {
                 var name = variableName.Replace("{{::", "").Replace("}}", "");
                 var global = _globals.Find( m => m.Symbol == name );
-                return global.Value;
+                if ( global == null )
+                    return "<undefined>";
+                else
+                    return global.Value;
             }
             else {
                 var name = variableName.Replace( "{{", "").Replace("}}", "");

@@ -61,7 +61,7 @@ namespace POC_Splitter
             _resolver = resolver;
             _margin = margin;
 
-            btnClear.Text = "\uf057";
+            btnClear.Text = FontAwesome.TimesCircle;
             btnClear.Click += OnClearClick;
             btnClear.ForeColor = Color.Red;
 

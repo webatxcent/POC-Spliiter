@@ -29,12 +29,12 @@ namespace POC_Splitter
 
             lblCaption.Text = caption;
 
-            btnHelp.Text = "\uF30F";
+            btnHelp.Text = FontAwesome.InfoSquare;
             btnHelp.Click += OnHelpClick;
             btnHelp.ForeColor = Color.CornflowerBlue;
             btnHelp.Enabled = hasInfo;
 
-            btnFormula.Text = "\uf52c";//equal sign   "\uf661"; //f(x)
+            btnFormula.Text = FontAwesome.Equals; // was originally FontAwesome.Function
             btnFormula.Padding = new Padding( 0 );
             btnFormula.Click += OnFormulaClick;
             btnFormula.ForeColor = Color.CornflowerBlue;
