@@ -89,7 +89,7 @@ namespace POC_Splitter
                     _globals.Select( m => new GridRow( true, null, m.Symbol, m.Value, m.Description ) ).ToList() );
 
                 rows.AddRange(
-                    _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, m.Name, null, null ) ).ToList()
+                    _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, $"{m.ModuleName}[{m.StepNumber}].{m.Name}", null, null ) ).ToList()
                     );
 
                 dgvVariables.Columns.Clear();
