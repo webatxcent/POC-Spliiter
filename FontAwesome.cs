@@ -1,4 +1,4 @@
-﻿namespace POC_Splitter {
+﻿namespace XCENT.JobServer.Manager.App {
 
     public static class FontAwesome {
         public const string Bomb = "\uf1e2";

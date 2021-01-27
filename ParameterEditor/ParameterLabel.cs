@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public delegate void ShowHelpHandler( string name );
     public delegate void SetFormulaHandler( ParameterValue parameterValue, string name );

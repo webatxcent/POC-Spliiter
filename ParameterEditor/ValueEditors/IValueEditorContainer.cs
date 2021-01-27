@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public interface IValueEditorContainer
     {

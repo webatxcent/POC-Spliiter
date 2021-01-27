@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 using XCENT.Core.UI.WinForms;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public partial class NumberEditor : NumberBox, IValueEditor
     {
@@ -19,6 +19,7 @@ namespace POC_Splitter
 
         public NumberEditor() {
             InitializeComponent();
+            base.TextAlign = HorizontalAlignment.Left;
         }
 
         #region IValueEditor implementation

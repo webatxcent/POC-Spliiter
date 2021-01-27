@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 using System.Diagnostics;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public partial class BoolEditor : CheckBox, IValueEditor
     {

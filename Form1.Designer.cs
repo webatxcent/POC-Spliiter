@@ -1,4 +1,6 @@
-﻿namespace POC_Splitter {
+﻿using XCENT.JobServer.Manager.App;
+
+namespace POC_Splitter {
     partial class Form1 {
         /// <summary>
         /// Required designer variable.
@@ -28,8 +30,10 @@
             this.btnStep2 = new System.Windows.Forms.Button();
             this.btnStep3 = new System.Windows.Forms.Button();
             this.btnShowParams = new System.Windows.Forms.Button();
-            this.parameterContainer1 = new POC_Splitter.ParameterEditor();
+            this.parameterContainer1 = new XCENT.JobServer.Manager.App.ParameterEditor();
             this.btnIsValid = new System.Windows.Forms.Button();
+            this.txtLanding = new System.Windows.Forms.TextBox();
+            this.lblLanding = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnTrigger
@@ -92,23 +96,42 @@
             this.parameterContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.parameterContainer1.Name = "parameterContainer1";
             this.parameterContainer1.Size = new System.Drawing.Size(1169, 608);
-            this.parameterContainer1.TabIndex = 5;
+            this.parameterContainer1.TabIndex = 8;
             // 
             // btnIsValid
             // 
             this.btnIsValid.Location = new System.Drawing.Point(441, 12);
             this.btnIsValid.Name = "btnIsValid";
             this.btnIsValid.Size = new System.Drawing.Size(122, 32);
-            this.btnIsValid.TabIndex = 6;
+            this.btnIsValid.TabIndex = 5;
             this.btnIsValid.Text = "Validate";
             this.btnIsValid.UseVisualStyleBackColor = true;
             this.btnIsValid.Click += new System.EventHandler(this.btnIsValid_Click);
+            // 
+            // txtLanding
+            // 
+            this.txtLanding.Location = new System.Drawing.Point(654, 13);
+            this.txtLanding.Name = "txtLanding";
+            this.txtLanding.Size = new System.Drawing.Size(270, 29);
+            this.txtLanding.TabIndex = 7;
+            // 
+            // lblLanding
+            // 
+            this.lblLanding.AutoSize = true;
+            this.lblLanding.Location = new System.Drawing.Point(582, 16);
+            this.lblLanding.Name = "lblLanding";
+            this.lblLanding.Size = new System.Drawing.Size(66, 21);
+            this.lblLanding.TabIndex = 6;
+            this.lblLanding.Text = "Landing";
+            this.lblLanding.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1195, 675);
+            this.Controls.Add(this.lblLanding);
+            this.Controls.Add(this.txtLanding);
             this.Controls.Add(this.btnIsValid);
             this.Controls.Add(this.btnShowParams);
             this.Controls.Add(this.btnStep3);
@@ -121,6 +144,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -133,6 +157,8 @@
         private System.Windows.Forms.Button btnStep3;
         private System.Windows.Forms.Button btnShowParams;
         private System.Windows.Forms.Button btnIsValid;
+        private System.Windows.Forms.TextBox txtLanding;
+        private System.Windows.Forms.Label lblLanding;
     }
 }
 

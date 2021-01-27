@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
-using XCENT.JobServer.Api.Models;
+using XCENT.JobServer.Model;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
       public partial class ParameterVariables : Form
     {
@@ -25,33 +25,28 @@ namespace POC_Splitter
 
             public string Reference { get; }
 
-            public GridRow( bool isGlobal, ModuleParameterDirection? direction, string name, string value, string description ) {
+            public GridRow( bool isGlobal, ModuleParameterDirection? direction, string name, string value, string description, string reference ) {
 
-                if (isGlobal)
+                if ( isGlobal )
                     Global = FontAwesome.Globe;
                 else
                     Global = FontAwesome.Equals;
 
-                if (direction == null)
+                if ( direction == null )
                     Direction = "";
-                else if (direction.Value == ModuleParameterDirection.In)
+                else if ( direction.Value == ModuleParameterDirection.In )
                     Direction = FontAwesome.LongArrowAltDown;
-                else if (direction.Value == ModuleParameterDirection.Out)
+                else if ( direction.Value == ModuleParameterDirection.Out )
                     Direction = FontAwesome.LongArrowAltUp;
-                else if (direction.Value == ModuleParameterDirection.InOut)
+                else if ( direction.Value == ModuleParameterDirection.InOut )
                     Direction = FontAwesome.SortAlt;
 
                 Name = name;
                 Value = value;
                 Description = description;
-
-                //TODO: WEB-these should be generated as part of the global or variable class.
-                if ( isGlobal )
-                    Reference = $"{{{{::{name}}}}}";
-                else
-                    Reference = $"{{{{{name}}}}}";
-
+                Reference = reference;
             }
+
         }
 
         List<Variable> _variables;
@@ -86,13 +81,18 @@ namespace POC_Splitter
                     chkIncludeInputVariables.Checked = _variables.Any( m => m.Direction == ModuleParameterDirection.In && m.Reference() == valueSelector );
 
                 rows.AddRange(
-                    _globals.Select( m => new GridRow( true, null, m.Symbol, m.Value, m.Description ) ).ToList() );
+                     _globals.Select( m => new GridRow( true, null, m.Symbol, m.Value, m.Description, $"{{{{::{m.Symbol}}}}}" ) ).ToList() );
 
                 rows.AddRange(
-                    _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, $"{m.ModuleName}[{m.StepNumber}].{m.Name}", null, null ) ).ToList()
+                    _variables.Where( m => ( m.Direction != ModuleParameterDirection.In && !chkIncludeInputVariables.Checked ) || chkIncludeInputVariables.Checked ).Select( m => new GridRow( false, m.Direction, $"{m.ModuleName}[{m.StepNumber}].{m.Name}", "", "", $"{{{{{m.Name}}}}}" ) ).ToList()
                     );
 
+
                 dgvVariables.Columns.Clear();
+
+                dgvVariables.AllowUserToResizeColumns = true;
+                dgvVariables.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                dgvVariables.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
                 dgvVariables.DataSource = rows;
 
@@ -103,7 +103,9 @@ namespace POC_Splitter
 
                 dgvVariables.Columns[ "Reference" ].Visible = false;
 
-                dgvVariables.AutoResizeRows();
+                dgvVariables.AutoResizeColumns();
+
+                dgvVariables.AllowUserToResizeRows = false;
 
                 if ( String.IsNullOrEmpty( valueSelector ) )
                     return;

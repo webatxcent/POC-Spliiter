@@ -1,4 +1,4 @@
-﻿namespace POC_Splitter
+﻿namespace XCENT.JobServer.Manager.App
 {
     partial class ParameterVariables
     {
@@ -37,7 +37,7 @@
             // 
             this.chkIncludeInputVariables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkIncludeInputVariables.AutoSize = true;
-            this.chkIncludeInputVariables.Location = new System.Drawing.Point(13, 746);
+            this.chkIncludeInputVariables.Location = new System.Drawing.Point(13, 394);
             this.chkIncludeInputVariables.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chkIncludeInputVariables.Name = "chkIncludeInputVariables";
             this.chkIncludeInputVariables.Size = new System.Drawing.Size(185, 25);
@@ -51,7 +51,7 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(1075, 735);
+            this.btnCancel.Location = new System.Drawing.Point(530, 383);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(112, 36);
@@ -64,7 +64,7 @@
             this.btnSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSelect.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSelect.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelect.Location = new System.Drawing.Point(835, 735);
+            this.btnSelect.Location = new System.Drawing.Point(290, 383);
             this.btnSelect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnSelect.Name = "btnSelect";
             this.btnSelect.Size = new System.Drawing.Size(112, 36);
@@ -95,7 +95,7 @@
             this.dgvVariables.ShowCellToolTips = false;
             this.dgvVariables.ShowEditingIcon = false;
             this.dgvVariables.ShowRowErrors = false;
-            this.dgvVariables.Size = new System.Drawing.Size(1197, 723);
+            this.dgvVariables.Size = new System.Drawing.Size(652, 371);
             this.dgvVariables.TabIndex = 0;
             this.dgvVariables.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVariables_CellDoubleClick);
             this.dgvVariables.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvVariables_KeyDown);
@@ -105,7 +105,7 @@
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnClear.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(955, 735);
+            this.btnClear.Location = new System.Drawing.Point(410, 383);
             this.btnClear.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(112, 36);
@@ -120,7 +120,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(1200, 785);
+            this.ClientSize = new System.Drawing.Size(655, 433);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.dgvVariables);
             this.Controls.Add(this.btnSelect);
@@ -128,6 +128,7 @@
             this.Controls.Add(this.chkIncludeInputVariables);
             this.Font = new System.Drawing.Font("Segoe UI Semilight", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.MinimumSize = new System.Drawing.Size(640, 400);
             this.Name = "ParameterVariables";
             this.Text = "ParameterVariables";
             ((System.ComponentModel.ISupportInitialize)(this.dgvVariables)).EndInit();

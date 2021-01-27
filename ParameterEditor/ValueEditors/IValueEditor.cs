@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public delegate void ControlMoveFocusHandler( Control control, MoveFocus action );
     

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Api;
-using XCENT.JobServer.Api.Models;
+using XCENT.JobServer.Model;
 
 namespace POC_Splitter
 {
@@ -59,7 +59,7 @@ namespace POC_Splitter
                 return;
             }
 
-            job = jobServer.Jobs.FindById( 14 );
+            job = jobServer.Jobs.FindById( 37 ); //14, 37
 
             globals = jobServer.Globals.ListAll();
             modules = jobServer.Executors.ListAll();

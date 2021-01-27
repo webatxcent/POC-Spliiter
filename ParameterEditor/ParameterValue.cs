@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using XCENT.JobServer.Abstract;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
 
     public enum MoveFocus

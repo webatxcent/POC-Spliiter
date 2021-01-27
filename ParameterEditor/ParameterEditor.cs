@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using XCENT.JobServer.Abstract;
-using XCENT.JobServer.Api.Models;
+using XCENT.JobServer.Model;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public partial class ParameterEditor : UserControl
     {
@@ -28,7 +28,7 @@ namespace POC_Splitter
 
                 foreach ( Control c in this.splitContainer.Panel2.Controls ) {
                     ParameterValue parameterValue = c as ParameterValue;
-                    parameters.Add( new Parameter { Name = parameterValue.Name, Value = parameterValue.Value } );
+                    parameters.Add( new Parameter { Name = parameterValue.Name, Value = String.IsNullOrEmpty(parameterValue.Value) ? null: parameterValue.Value  } );
                 }
 
                 return parameters;
@@ -50,24 +50,32 @@ namespace POC_Splitter
             }
         }
 
+
+        /// <summary>
+        /// Returns false if any of the entered values violates the limits set on the data entry, such as being required.
+        /// </summary>
         public bool IsValid {
             get {
                 Parameters parameters = this.Parameters;
 
-                foreach ( ParameterDef def in _parameterDefs ) {
-                    if ( !def.IsRequired )
-                        continue;
-
-                    Parameter parameter = parameters.Find( m=>m.Name == def.Name);
-                    if ( parameter == null )
-                        return false;
-                    if ( String.IsNullOrEmpty( parameter.Value ) )
-                        return false;
+                if ( _parameterDefs != null ) {
+                    foreach ( ParameterDef def in _parameterDefs ) {
+                        if ( !def.IsRequired )
+                            continue;
+                        Parameter parameter = parameters.Find( m=>m.Name == def.Name);
+                        if ( parameter == null )
+                            return false;
+                        if ( String.IsNullOrEmpty( parameter.Value ) )
+                            return false;
+                    }
                 }
+
                 return true;
             }
         }
-
+        /// <summary>
+        /// Returns true if any of the editor fields have been modified, and thus differing from the original.
+        /// </summary>
         public bool HasChanged {
             get {
                 foreach ( Control c in this.splitContainer.Panel2.Controls ) {
@@ -85,6 +93,7 @@ namespace POC_Splitter
                 return false;
             }
         }
+
 
         public ParameterEditor() {
             InitializeComponent();
@@ -503,7 +512,14 @@ namespace POC_Splitter
         }
 
         private void OnSetFormula( ParameterValue valueControl, string name ) {
+
+            if ( _globals.Count == 0 && _variables.Count == 0 ) {
+                MessageBox.Show( "Sorry, there are no globals defined or variables available at this step.", "No Globals or Variables", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                return;
+            }
+
             ParameterVariables dialog = new ParameterVariables( valueControl.ParameterDef.Caption, valueControl.Value, _globals, _variables );
+            dialog.StartPosition = FormStartPosition.CenterScreen;
             DialogResult result = dialog.ShowDialog();
 
             if ( result == DialogResult.OK ) {

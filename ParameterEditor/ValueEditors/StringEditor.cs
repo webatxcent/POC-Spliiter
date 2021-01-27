@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public partial class StringEditor : TextBox, IValueEditor
     {
@@ -40,7 +40,9 @@ namespace POC_Splitter
         }
 
         public void Configure( ParameterDef parameterDef, string value ) {
-            Text = value; 
+            Text = value;
+            if ( parameterDef.IsPassword.HasValue && parameterDef.IsPassword.Value )
+                PasswordChar = '*';
         }
 
         public new int PreferredHeight {

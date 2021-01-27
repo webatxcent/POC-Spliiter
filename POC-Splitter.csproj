@@ -61,8 +61,8 @@
     <Reference Include="XCENT.JobServer.Api">
       <HintPath>libs\XCENT.JobServer.Api.dll</HintPath>
     </Reference>
-    <Reference Include="XCENT.JobServer.Api.Models">
-      <HintPath>libs\XCENT.JobServer.Api.Models.dll</HintPath>
+    <Reference Include="XCENT.JobServer.Model">
+      <HintPath>libs\XCENT.JobServer.Model.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

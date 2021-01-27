@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
 using XCENT.Core.UI.WinForms;
 
-namespace POC_Splitter
+namespace XCENT.JobServer.Manager.App
 {
     public partial class DateEditor : DateBox, IValueEditor
     {

@@ -1,4 +1,4 @@
-﻿namespace POC_Splitter
+﻿namespace XCENT.JobServer.Manager.App
 {
     partial class SingleChoiceEditor
     {
