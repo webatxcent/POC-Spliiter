@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -80,6 +81,12 @@
     </Compile>
     <Compile Include="ParameterEditor\ParameterVariables.Designer.cs">
       <DependentUpon>ParameterVariables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterEditor\PESplitContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ParameterEditor\PESplitContainer.Designer.cs">
+      <DependentUpon>PESplitContainer.cs</DependentUpon>
     </Compile>
     <Compile Include="ParameterEditor\ValueEditors\IValueEditorContainer.cs" />
     <Compile Include="ParameterEditor\ValueEditors\SingleChoiceEditor.cs">

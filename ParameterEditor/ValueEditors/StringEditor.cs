@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using XCENT.JobServer.Abstract;
+using System.Diagnostics;
 
 namespace XCENT.JobServer.Manager.App
 {
@@ -17,8 +18,9 @@ namespace XCENT.JobServer.Manager.App
         public StringEditor() {
             InitializeComponent();
         }
-        protected override void OnEnter( EventArgs e ) {
-            base.OnEnter( e );
+
+        protected override void OnGotFocus( EventArgs e ) {
+            base.OnGotFocus( e );
             SelectAll();
         }
 

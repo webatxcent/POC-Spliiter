@@ -56,6 +56,11 @@ namespace XCENT.JobServer.Manager.App
         }
 
         public ParameterValue( ParameterDef parameterDef, string value, ResolveVariable resolver, int margin ) {
+
+            SetStyle( ControlStyles.ResizeRedraw, true );
+            SetStyle( ControlStyles.Selectable, true );
+            SetStyle( ControlStyles.OptimizedDoubleBuffer, true );
+
             InitializeComponent();
 
             _resolver = resolver;
@@ -74,7 +79,6 @@ namespace XCENT.JobServer.Manager.App
             _proxy.TabStop = false;
             _proxy.Visible = false;
             Controls.Add( _proxy );
-
 
             if ( parameterDef.ModuleParameterType == ModuleParameterType.String ) {
                 _editor = new StringEditor();
@@ -114,11 +118,21 @@ namespace XCENT.JobServer.Manager.App
             KeyDown += ParameterValue_KeyDown;
         }
 
+
         private void ParameterValue_KeyDown( object sender, KeyEventArgs e ) {
+            //if the parameter field is not a variable reference, there is an actual control on the form that will do key handling.
             if ( !_isVariableReference )
                 return;
 
-            Debug.Print( $"{e.KeyCode}" );
+            //if ( e.KeyCode == Keys.Tab ) {
+            //    this.SelectNextControl( (Control)sender, true, true, true, true );
+            //    e.Handled = true;
+            //}
+
+            //if ( e.KeyCode == Keys.Tab && e.KeyData == Keys.Shift ) {
+            //    e.Handled = true;
+            //    this.SelectNextControl( (Control)sender, true, true, true, true );
+            //}
 
             if ( e.KeyCode == Keys.Delete && e.Modifiers == 0 ) {
                 ClearVariableAssignment();
@@ -141,14 +155,19 @@ namespace XCENT.JobServer.Manager.App
         }
 
         private void ParameterValue_GotFocus( object sender, EventArgs e ) {
+            //if we are displaying a variable reference and not an actual control...
             if ( _isVariableReference ) {
+                //set the has focus flag and invalidate so as to paint the control with a focus rectangle.
                 _hasFocus = true;
                 Invalidate();
             }
         }
 
+
         private void ParameterValue_LostFocus( object sender, EventArgs e ) {
+            //if we are displaying a varaible reference and not an actual control...
             if ( _isVariableReference ) {
+                //clear the has focus flag and invalidate so as to paint the control without a focus rectangle
                 _hasFocus = false;
                 Invalidate();
             }
@@ -168,6 +187,7 @@ namespace XCENT.JobServer.Manager.App
 
             MoveFocus action =  ParameterValue.EvaluateKey( e );
 
+            //if the particular editor dictates suppression of Up/Down keys such as the combobox, don't hand the key.
             if ( ( action == MoveFocus.Previous || action == MoveFocus.Next ) && _editor.SuppressUpDownHandling )
                 return;
 
@@ -326,7 +346,7 @@ namespace XCENT.JobServer.Manager.App
         }
 
         public void ChangeFocus( MoveFocus moveFocus ) {
-            FocusChange?.Invoke( this, moveFocus );
+            //FocusChange?.Invoke( this, moveFocus );
         }
 
         #endregion

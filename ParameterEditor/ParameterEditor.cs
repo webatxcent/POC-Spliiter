@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using XCENT.JobServer.Abstract;
 using XCENT.JobServer.Model;
+using System.Runtime.InteropServices;
 
 namespace XCENT.JobServer.Manager.App
 {
@@ -21,6 +22,7 @@ namespace XCENT.JobServer.Manager.App
         List<Variable> _variables;
         List<ParameterDef> _parameterDefs;
         Parameters _parameters;
+        int _nextTabIndex = 0;
 
         public Parameters Parameters {
             get {
@@ -97,13 +99,6 @@ namespace XCENT.JobServer.Manager.App
 
         public ParameterEditor() {
             InitializeComponent();
-            splitContainer.GotFocus += SplitContainer_GotFocus;
-
-        }
-
-        private void SplitContainer_GotFocus( object sender, EventArgs e ) {
-            if ( splitContainer.Panel2.Controls.Count > 0 )
-                splitContainer.Panel2.Controls[ 0 ].Focus();
         }
 
         public void LoadParameterData( List<ParameterDef> parameterDefs, Parameters parameters, List<Variable> variables, List<GlobalDtoForView> globals ) {
@@ -139,6 +134,7 @@ namespace XCENT.JobServer.Manager.App
                     parameters.Add( new Parameter { Name = def.Name, Value = null } );
             }
 
+            Parameters.ApplyDefaults( parameterDefs );
 
             foreach ( ParameterDef def in parameterDefs ) {
                 if ( def.ModuleParameterDirection == ModuleParameterDirection.Out )
@@ -152,13 +148,21 @@ namespace XCENT.JobServer.Manager.App
                 AddParameter( parameterLabel, parameterValue );
             }
             LayoutControls();
-            ResumeLayout();
+
+            ResumeLayout(true);
         }
 
+        /// <summary>
+        /// This method takes a supplied variable name which would come from a control attempting to display a global or local variable
+        /// and attempts to resolve it to either the actual global value or an unmustachioed version of the local variable. If the reference cannot 
+        /// be resolved, then undefined is returned.
+        /// </summary>
+        /// <param name="variableName">Variable name to resolve</param>
+        /// <returns>A global value, a local variable, or undefined</returns>
         string Resolver( string variableName ) {
             if ( variableName.StartsWith( "{{::" ) ) {
                 var name = variableName.Replace("{{::", "").Replace("}}", "");
-                var global = _globals.Find( m => m.Symbol == name );
+                var global = _globals.Find( m => m.Symbol.ToLower() == name.ToLower() );
                 if ( global == null )
                     return "<undefined>";
                 else
@@ -166,7 +170,7 @@ namespace XCENT.JobServer.Manager.App
             }
             else {
                 var name = variableName.Replace( "{{", "").Replace("}}", "");
-                var variable = _variables.Find( m=>m.Name == name);
+                var variable = _variables.Find( m=>m.Name.ToLower() == name.ToLower());
                 if ( variable == null )
                     return "<undefined>";
                 else
@@ -183,11 +187,16 @@ namespace XCENT.JobServer.Manager.App
 
             parameterValue.Tag = parameterLabel;
             splitContainer.Panel2.Controls.Add( parameterValue );
+            parameterValue.TabIndex = _nextTabIndex++;
             parameterValue.FocusChange += OnFocusChange;
             parameterValue.SyncLabels += OnSyncLabels;
             parameterValue.SetFormula += OnSetFormula;
         }
 
+        /// <summary>
+        /// Removes the added controls, as well as their references to internal memory instances so that 
+        /// GC will do a full cleanup.
+        /// </summary>
         protected override void DestroyHandle() {
             //make sure the control cross referencing tags are set to null to avoid memory leaks.
             foreach ( Control control in splitContainer.Panel1.Controls )
@@ -196,6 +205,7 @@ namespace XCENT.JobServer.Manager.App
                 control.Tag = null;
             base.DestroyHandle();
         }
+
 
         void OnValuePanelPaint( object sender, System.Windows.Forms.PaintEventArgs e ) {
             ResizeValuePanelControls();
@@ -255,10 +265,6 @@ namespace XCENT.JobServer.Manager.App
         protected override void OnCreateControl() {
 
             base.OnCreateControl();
-
-            //these handlers are part of the fix for the focus problem with the splitter container sticking on the splitter bar.
-            splitContainer.MouseDown += splitContainer_MouseDown;
-            splitContainer.MouseUp += splitContainer_MouseUp;
 
             //this sets the initial splitter position, this should probably be externalized and saved off so that it is persisted as user preferences.
             splitContainer.SplitterDistance = (int)(Width * 0.4);
@@ -456,12 +462,6 @@ namespace XCENT.JobServer.Manager.App
 
         }
 
-        protected override void OnEnter( EventArgs e ) {
-            base.OnEnter( e );
-            if ( splitContainer.Panel2.Controls.Count > 0 )
-                splitContainer.Panel2.Controls[ 0 ].Focus();
-        }
-
         private void LayoutControls() {
             int nextTop = 0;
             foreach ( Control control in splitContainer.Panel2.Controls ) {
@@ -551,43 +551,5 @@ namespace XCENT.JobServer.Manager.App
                 label.Width = splitContainer.Panel1.Width;
             }
         }
-
-        #region Fix for focus sticking on the splitter bar.
-
-        private Control focused = null;
-
-        private void splitContainer_MouseDown( object sender, MouseEventArgs e ) {
-            // Get the focused control before the splitter is focused
-            focused = getFocused( this.Controls );
-        }
-
-        private Control getFocused( Control.ControlCollection controls ) {
-            foreach ( Control c in controls ) {
-                if ( c.Focused ) {
-                    // Return the focused control
-                    return c;
-                }
-                else if ( c.ContainsFocus ) {
-                    // If the focus is contained inside a control's children
-                    // return the child
-                    return getFocused( c.Controls );
-                }
-            }
-            // No control on the form has focus
-            return null;
-        }
-
-        private void splitContainer_MouseUp( object sender, MouseEventArgs e ) {
-            // If a previous control had focus
-            if ( focused != null ) {
-                // Return focus and clear the temp variable for 
-                // garbage collection
-                focused.Focus();
-                focused = null;
-            }
-        }
-
-        #endregion
-
     }
 }

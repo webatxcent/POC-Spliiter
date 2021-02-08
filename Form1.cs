@@ -25,6 +25,26 @@ namespace POC_Splitter {
             SetStepToEdit( 1 );
         }
 
+        [DllImport( "user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi )]
+        internal static extern IntPtr GetFocus();
+
+        private Control GetFocusedControl() {
+            Control focusedControl = null;
+            // To get hold of the focused control:
+            IntPtr focusedHandle = GetFocus();
+            if ( focusedHandle != IntPtr.Zero )
+                // Note that if the focused Control is not a .Net control, then this will return null.
+                focusedControl = Control.FromHandle( focusedHandle );
+            return focusedControl;
+        }
+
+        protected override void OnKeyDown( KeyEventArgs e ) {
+            if ( e.KeyCode == Keys.F1 ) {
+                this.Text = $"Focused: {GetFocusedControl().Name}";
+            }
+            base.OnKeyDown( e );
+        }
+
         void SetStepToEdit( int editStep ) {
             IModule module = null;
             Parameters parameters = null;
