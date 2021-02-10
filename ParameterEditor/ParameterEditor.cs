@@ -62,9 +62,9 @@ namespace XCENT.JobServer.Manager.App
 
                 if ( _parameterDefs != null ) {
                     foreach ( ParameterDef def in _parameterDefs ) {
-                        if ( !def.IsRequired )
+                        if ( !def.IsRequired || def.ModuleParameterDirection == ModuleParameterDirection.Out )
                             continue;
-                        Parameter parameter = parameters.Find( m=>m.Name == def.Name);
+                        Parameter parameter = parameters.Find( m=>m.Name.ToLower() == def.Name.ToLower());
                         if ( parameter == null )
                             return false;
                         if ( String.IsNullOrEmpty( parameter.Value ) )
@@ -82,7 +82,7 @@ namespace XCENT.JobServer.Manager.App
             get {
                 foreach ( Control c in this.splitContainer.Panel2.Controls ) {
                     ParameterValue parameterValue = c as ParameterValue;
-                    var originalParameterValue = _parameters.Find( m=>m.Name == parameterValue.Name );
+                    var originalParameterValue = _parameters.Find( m=>m.Name.ToLower() == parameterValue.Name.ToLower() );
 
                     //if there is no original parameter value for this particular named parameter, then there is definitely a change.
                     if ( originalParameterValue == null )
@@ -105,6 +105,7 @@ namespace XCENT.JobServer.Manager.App
 
             SuspendLayout();
 
+            _nextTabIndex = 0;
             //clean out any controls first.
             while ( splitContainer.Panel2.Controls.Count > 0 ) {
                 Control value = splitContainer.Panel2.Controls[0];
@@ -126,11 +127,11 @@ namespace XCENT.JobServer.Manager.App
             //TODO: WEB This should be replaced with a call to a new proposed member on Parameters to do this cleanup 
             List<Parameter> paramsCopy = new Parameters( parameters ); //create a deep copy for enumeration purposes.
             foreach ( Parameter param in paramsCopy ) {
-                if ( parameterDefs.Find( m => m.Name == param.Name ) == null )
+                if ( parameterDefs.Find( m => m.Name.ToLower() == param.Name.ToLower() ) == null )
                     parameters.Remove( param );
             }
             foreach ( ParameterDef def in parameterDefs ) {
-                if ( parameters.Find( m => m.Name == def.Name ) == null )
+                if ( parameters.Find( m => m.Name.ToLower() == def.Name.ToLower() ) == null )
                     parameters.Add( new Parameter { Name = def.Name, Value = null } );
             }
 
@@ -140,7 +141,7 @@ namespace XCENT.JobServer.Manager.App
                 if ( def.ModuleParameterDirection == ModuleParameterDirection.Out )
                     continue;
 
-                Parameter param = parameters.Find( m => m.Name == def.Name );
+                Parameter param = parameters.Find( m => m.Name.ToLower() == def.Name.ToLower() );
 
                 ParameterValue parameterValue = new ParameterValue( def, param.Value, new ResolveVariable( Resolver ), 2 );
                 ParameterLabel parameterLabel = new ParameterLabel( def.Name, def.Caption, def.IsRequired, !String.IsNullOrEmpty( def.Description ), def.ModuleParameterType == ModuleParameterType.String, 2 );
@@ -496,7 +497,7 @@ namespace XCENT.JobServer.Manager.App
             else if ( moveFocus == MoveFocus.Next ) {
                 for ( int i = 0; i < splitContainer.Panel2.Controls.Count - 1; i++ ) {
                     ParameterValue parameterValue = splitContainer.Panel2.Controls[i] as ParameterValue;
-                    if ( parameterValue.Name == source.Name ) {
+                    if ( parameterValue.Name.ToLower() == source.Name.ToLower() ) {
                         splitContainer.Panel2.Controls[ i + 1 ].Focus();
                     }
                 }
@@ -504,7 +505,7 @@ namespace XCENT.JobServer.Manager.App
             else if ( moveFocus == MoveFocus.Previous ) {
                 for ( int i = 1; i < splitContainer.Panel2.Controls.Count; i++ ) {
                     ParameterValue parameterValue = splitContainer.Panel2.Controls[i] as ParameterValue;
-                    if ( parameterValue.Name == source.Name ) {
+                    if ( parameterValue.Name.ToLower() == source.Name.ToLower() ) {
                         splitContainer.Panel2.Controls[ i - 1 ].Focus();
                     }
                 }
@@ -528,7 +529,7 @@ namespace XCENT.JobServer.Manager.App
         }
 
         private void OnShowHelp( string name ) {
-            ParameterDef def = _parameterDefs.Find( m=>m.Name == name);
+            ParameterDef def = _parameterDefs.Find( m=>m.Name.ToLower() == name.ToLower());
             string message = def.Description;
             MessageBox.Show( message, $"Usage - {def.Caption}" );
         }

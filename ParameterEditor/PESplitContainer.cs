@@ -14,8 +14,8 @@ namespace XCENT.JobServer.Manager.App
 {
     public partial class PESplitContainer : SplitContainer
     {
-        private bool _isMouseDown = false;
-        private Control _focused = null;
+        //private bool _isMouseDown = false;
+        //private Control _focused = null;
 
         public PESplitContainer() {
 

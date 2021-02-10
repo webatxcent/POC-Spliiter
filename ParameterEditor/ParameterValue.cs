@@ -47,7 +47,10 @@ namespace XCENT.JobServer.Manager.App
 
         public string Value {
             get {
-                return _editor.Value;
+                if ( String.IsNullOrEmpty( _editor.Value ) )
+                    return null;
+                else
+                    return _editor.Value;
             }
             set {
                 _editor.Configure( ParameterDef, value );

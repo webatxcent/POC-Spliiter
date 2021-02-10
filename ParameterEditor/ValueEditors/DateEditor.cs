@@ -37,7 +37,10 @@ namespace XCENT.JobServer.Manager.App
         }
 
         public void Configure( ParameterDef parameterDef, string value ) {
-            Text = value; 
+            Text = value;
+            //2021-02-08 WEB    User reports that ParameterEditor is not honoring the optional attribute of parameters from the old IJob interface.
+            //                  http://support.xcent.com/default.asp?23268
+            AllowBlank = !parameterDef.IsRequired;
         }
 
         public new int PreferredHeight {
